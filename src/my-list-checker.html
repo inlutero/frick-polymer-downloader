@@ -1,0 +1,70 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="../bower_components/iron-autogrow-textarea/iron-autogrow-textarea.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../src/my-icons.html">
+
+<dom-module id="my-list-checker">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+        padding: 10px;
+      }
+    </style>
+
+    <style is="custom-style">
+    paper-button {
+        --paper-button: {
+          @apply(--layout-vertical);
+          @apply(--layout-right-right);
+        }
+        ;
+        background-color: var(--paper-indigo-500);
+        color: white;
+      }
+
+      ;
+    }
+    .wideLay {
+      @apply(--layout-vertical);
+    }
+    </style>
+
+    <div class="card">
+      <h1>List Checker</h1>
+      <div class="wideLay">
+        <iron-autogrow-textarea id="text1" rows="15" style="width:100%;margin-bottom:15px;" placeholder="Cut and paste or drag and drop barcode list text here."></iron-autogrow-textarea>
+        <paper-button on-tap="checkList" raised>
+          <iron-icon icon="icons:search"></iron-icon>Check List</paper-button>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'my-list-checker',
+      checkList: function() {
+        if (textarea.value != '') {
+          var separators = [' ', '\n', ','];
+          var arrayOfLines = textarea.value.split(new RegExp(separators.join('|'), '')).filter(bcode => bcode.trim().length > 0)
+          alert(arrayOfLines)
+          getElements(0, arrayOfLines, 0, 0, 0, function() {
+            console.log('Done!')
+          })
+        }
+        this.fire('checkRange')
+      }
+    });
+  </script>
+</dom-module>

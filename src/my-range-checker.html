@@ -1,0 +1,53 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../src/my-icons.html">
+<link rel="import" href="shared-styles.html">
+
+
+<dom-module id="my-range-checker">
+  <!-- Defines the element's style and local DOM -->
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+
+        padding: 16px;
+      }
+    </style>
+    <style is="custom-style">
+   paper-button {
+     --paper-button: {
+       @apply(--layout-vertical);
+       @apply(--layout-right-right);
+
+    background-color: var(--paper-indigo-500);
+    color: white;
+    };
+  }
+ </style>
+<div class="card">
+    <h1>Range Checker</h1><div style="margin-bottom:15px;">
+From <paper-input label="Starting Number" id="lowEnd"></paper-input> to <paper-input label="Ending Number" id="highEnd">
+</paper-input></div><paper-button on-tap="checkRange" raised><iron-icon icon="icons:search"></iron-icon>Check Range</paper-button></div>
+  </template>
+  <!-- Creates the element's prototype and registers it -->
+  <script>
+  window.addEventListener('checkRange', function (e) {
+           alert("This does fire");
+       });
+    Polymer({
+      is: 'my-range-checker',
+      checkRange: function() {
+          alert(lowEnd.value + ', ' + highEnd.value)
+          var list = [];
+      if (lowEnd.value >= 0 && highEnd.value >= lowEnd.value) {
+        for (var i = lowEnd.value; i <= highEnd.value; i++) {
+      list.push(i);
+    }
+    alert(list)
+      }
+    }
+    });
+  </script>
+</dom-module>

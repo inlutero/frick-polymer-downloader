@@ -1,0 +1,132 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<script src="../webcomponentsjs/webcomponents-lite.min.js"></script>
+<link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-results-table">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+
+        padding: 10px;
+      }
+      #lazy {
+   height: 300px;
+ }
+    </style>
+
+    <div class="card">
+      <h1>Results</h1>
+      <vaadin-grid id="lazy">
+        <table>
+          <colgroup>
+            <col name="number" width="80"/>
+            <col name="firstName"/>
+            <col name="lastName"/>
+            <col name="email"/>
+          </colgroup>
+          <thead>
+          <tr>
+            <th>#</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+          </tr>
+          </thead>
+        </table>
+      </vaadin-grid>
+    </div>
+  </template>
+  <script>
+  function getBarcodeElement(barcode, cb) {
+  var url = 'http://192.168.10.85/api/search/details/Barcode/' + barcode
+
+  var response = {
+    items: [],
+    count: '0'
+  }
+
+  $.getJSON(url, function(result) {
+    console.log(result)
+    response.count = result.documents.hits.total
+    if (response.count > 0) {
+      $.each(result.documents.hits.hits, function(idx, hit) {
+        var item = {}
+        item.filename = JSON.stringify(hit._source.UTF8Name)
+        item.barcode = barcode
+        item.ids = JSON.stringify(hit._id)
+        item.count = response.count
+        response.items.push(item)
+      })
+    } else {
+      var item = {}
+      item.filename = 'Missing'
+      item.barcode = barcode
+      item.ids = ''
+      item.count = 0
+      response.items.push(item)
+    }
+    cb(response)
+  })
+}
+
+function getElements(idx, barcodes, numItems, numTifs, numPdfs, cb) {
+  if (idx >= barcodes.length) {
+    paginateTable(numItems, '')
+    docCounter(numTifs, numPdfs)
+    return cb()
+  }
+  getBarcodeElement(barcodes[idx], function(items) {
+    var count = addItems(items)
+    var typeCount = fileTypeCounter(items)
+    var pdfs = typeCount.pdfsCount
+    var tifs = typeCount.tifsCount
+    getElements(idx + 1, barcodes, count + numItems, numTifs + tifs, numPdfs + pdfs, cb)
+  })
+}
+  <!--
+  testing code
+  -->
+    (function() {
+      HTMLImports.whenReady(function() {
+        var grid = document.querySelector('#lazy');
+
+        grid.columns[0].renderer = function(cell) {
+          cell.element.textContent = cell.row.index;
+        };
+
+        grid.items = function(params, callback) {
+          getJSON('https://demo.vaadin.com/demo-data/1.0/people?index=' + params.index + '&count=' + params.count, function(json) {
+            callback(json.result, json.size);
+          });
+        };
+      });
+
+      function getJSON(url, callback) {
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+            callback(JSON.parse(xhr.responseText));
+          }
+        };
+        xhr.open('GET', url, true);
+        xhr.send();
+      }
+    })();
+  </script>
+  <script>
+    Polymer({
+      is: 'my-results-table'
+    });
+  </script>
+</dom-module>
