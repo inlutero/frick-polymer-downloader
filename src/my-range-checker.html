@@ -39,10 +39,10 @@ From <paper-input label="Starting Number" id="lowEnd"></paper-input> to <paper-i
     Polymer({
       is: 'my-range-checker',
       checkRange: function() {
-          alert(lowEnd.value + ', ' + highEnd.value)
+          alert(this.$.highEnd.value)
           var list = [];
-      if (lowEnd.value >= 0 && highEnd.value >= lowEnd.value) {
-        for (var i = lowEnd.value; i <= highEnd.value; i++) {
+      if (this.$.lowEnd.value >= 0 && this.$.highEnd.value >= this.$.lowEnd.value) {
+        for (var i = this.$.lowEnd.value; i <= this.$.highEnd.value; i++) {
       list.push(i);
     }
     alert(list)
