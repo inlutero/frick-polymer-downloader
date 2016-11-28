@@ -7,7 +7,7 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
-<script src="../webcomponentsjs/webcomponents-lite.min.js"></script>
+<linl rel="import" href="../bower_components/webcomponentsjs/webcomponents-lite.min.js">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="shared-styles.html">
@@ -48,7 +48,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </div>
   </template>
   <script>
-  function getBarcodeElement(barcode, cb) {
+/* function getBarcodeElement(barcode, cb) {
   var url = 'http://192.168.10.85/api/search/details/Barcode/' + barcode
 
   var response = {
@@ -93,10 +93,8 @@ function getElements(idx, barcodes, numItems, numTifs, numPdfs, cb) {
     var tifs = typeCount.tifsCount
     getElements(idx + 1, barcodes, count + numItems, numTifs + tifs, numPdfs + pdfs, cb)
   })
-}
-  <!--
-  testing code
-  -->
+} */
+  /*testing code  */
     (function() {
       HTMLImports.whenReady(function() {
         var grid = document.querySelector('#lazy');

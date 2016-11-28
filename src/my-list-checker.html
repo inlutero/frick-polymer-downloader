@@ -12,6 +12,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="../bower_components/iron-autogrow-textarea/iron-autogrow-textarea.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../src/my-icons.html">
 
 <dom-module id="my-list-checker">
@@ -54,7 +55,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script>
     Polymer({
       is: 'my-list-checker',
+      properties: {
+        'lowEndIn': {
+            type: String,
+            reflectToAttribute: true,
+            notify: true
+        }
+      },
       checkList: function() {
+        alert(this.lowEndIn)
         if (this.$.text1.value != '') {
           var separators = [' ', '\n', ','];
           var arrayOfLines = this.$.text1.value.split(new RegExp(separators.join('|'), '')).filter(bcode => bcode.trim().length > 0)
@@ -63,6 +72,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             console.log('Done!')
           })
         }
+        alert(list)
         this.fire('checkRange')
       }
     });
