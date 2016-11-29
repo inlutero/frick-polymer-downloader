@@ -46,19 +46,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </table>
       </vaadin-grid>
     </div>
-    <template is="dom-repeat" items="[[barcodes]]">
-      <span>{{item.barcode}}</span>
-    </template>
     <template is="dom-repeat" items="[[arrayOfLines]]">
-      <span>'http://192.168.10.85/api/search/details/Barcode/' + {{item}}</span><br/>
-      <span>{{_generateBarcodeUrl(item)}}</span>
     <iron-ajax
       auto
-      url={{_generateBarcodeUrl(item)}}
+      url='http://192.168.10.85/api/search/details/Barcode/{{item}}'
       handle-as="json"
-      last-response={{data}}></iron-ajax>
+      response={{data}}
+      on-response="handlResponse"></iron-ajax>
        </template>
-
   </template>
   <script>
   Polymer({
@@ -69,17 +64,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                  },
                  'barcodes': {
                      type: Array
+                 },
+                 'data': {
+                   type: Array,
+                   notify: true
+                 },
+                 'documents': {
+                   type: Array,
+                   notify: true
                  }
              },
-             handleResponse: function (data) {
-                 this.barcodes = data.document.hits.hits;
-                 alert(this.barcodes)
-             },
-             _generateBarcodeUrl: function(barcode) {
-               console.log(barcode)
-				var newURL = "http://192.168.10.85/api/search/details/Barcode/" + barcode;
-				return newURL;
-			},
+             handleResponse: function(data) {
+                 this.set('documents', data.documents.hits.hits)
+                 alert('turd bucket')
+             }
          });
 /* function getBarcodeElement(barcode, cb) {
   var url = 'http://192.168.10.85/api/search/details/Barcode/' + barcode

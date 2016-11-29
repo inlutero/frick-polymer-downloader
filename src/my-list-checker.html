@@ -47,7 +47,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <h2>[[lowEndIn]]</h2>
       <div class="wideLay">
         <iron-autogrow-textarea value="{{listValues}}" id="text1" rows="15" style="width:100%;margin-bottom:15px;" placeholder="Cut and paste or drag and drop barcode list text here."></iron-autogrow-textarea>
-        <paper-button on-tap="" raised on-transitionend="checkList">
+        <paper-button raised on-transitionend="checkList">
           <iron-icon icon="icons:search"></iron-icon>Check List</paper-button>
       </div>
     </div>
@@ -73,12 +73,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var separators = [' ', '\n', ','];
           var arrayOfLines = this.listValues.split(new RegExp(separators.join('|'), '')).filter(bcode => bcode.trim().length > 0)
           this.set('arrayOfLines', arrayOfLines)
-          alert(this.arrayOfLines)
-          getElements(0, arrayOfLines, 0, 0, 0, function() {
-            console.log('Done!')
-          })
+      
         }
-        this.fire('checkRange')
       }
     });
   </script>
