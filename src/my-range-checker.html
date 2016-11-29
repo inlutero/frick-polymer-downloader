@@ -28,7 +28,7 @@
  </style>
 <div class="card">
     <h1>Range Checker</h1><div style="margin-bottom:15px;">
-From <paper-input label="Starting Number" id="lowEnd" value="{{ lowEndIn }}" lowEndIn="{{ lowEndIn }}"></paper-input> to <paper-input label="Ending Number" id="highEnd" value="{{highEndIn}}" highEnd="{{ highEndIn }}">
+From <paper-input label="Starting Number" id="lowEnd" value="{{ lowEndIn }}"></paper-input> to <paper-input label="Ending Number" id="highEnd" value="{{highEndIn}}">
 </paper-input></div><paper-button on-tap="checkRange" raised><iron-icon icon="icons:search"></iron-icon>Check Range</paper-button></div><div>{{ lowEndIn }}, {{highEndIn}}</div>
   </template>
   <!-- Creates the element's prototype and registers it -->
@@ -41,22 +41,19 @@ From <paper-input label="Starting Number" id="lowEnd" value="{{ lowEndIn }}" low
       properties: {
        'lowEndIn': {
            type: String,
-           reflectToAttribute: true,
-           notify: true,
+           notify: true
 
        },
        'highEndIn': {
            type: String,
-           reflectToAttribute: true,
            notify: true
        },
 
    },
       checkRange: function() {
-        alert(this.lowEndIn)
           var list = [];
-      if (this.$.lowEnd.value >= 0 && this.$.highEnd.value >= this.$.lowEnd.value) {
-        for (var i = this.$.lowEnd.value; i <= this.$.highEnd.value; i++) {
+      if (this.lowEndIn >= 0 && this.highEndIn >= this.lowEndIn) {
+        for (var i = this.lowEndIn; i <= this.highEndIn; i++) {
       list.push(i);
     }
     alert(list)

@@ -10,6 +10,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <linl rel="import" href="../bower_components/webcomponentsjs/webcomponents-lite.min.js">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="my-results-table">
@@ -27,27 +28,53 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <div class="card">
       <h1>Results</h1>
+      <h2>[[arrayOfLines]]</h2>
       <vaadin-grid id="lazy">
         <table>
           <colgroup>
-            <col name="number" width="80"/>
-            <col name="firstName"/>
-            <col name="lastName"/>
-            <col name="email"/>
+            <col name="Barcode"/>
+            <col name="FileName"/>
+            <col name="Files"/>
           </colgroup>
           <thead>
           <tr>
+            <th>Barcode</th>
+            <th>File Name</th>
             <th>#</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Email</th>
           </tr>
           </thead>
         </table>
       </vaadin-grid>
     </div>
+    <template is="dom-repeat" items="[[barcodes]]">
+      <span>{{item.barcode}}</span>
+    </template>
+    <template is="dom-repeat" items="[[arrayOfLines]]">
+      <span>'http://192.168.10.85/api/search/details/Barcode/' + {{item}}</span><br/>
+    <iron-ajax
+      auto
+      url=http://192.168.10.85/api/search/details/Barcode/{{item}}
+      handle-as="json"
+      hon-response="handleResponse"></iron-ajax>
+       </template>
+
   </template>
   <script>
+  Polymer({
+             is: 'show-repositories',
+             properties: {
+                 'arrayOfLines': {
+                     type: Array
+                 },
+                 'barcodes': {
+                     type: Array
+                 }
+             },
+             handleResponse: function (data) {
+                 this.barcodes = data.document.hits.hits;
+                 alert(this.barcodes)
+             }
+         });
 /* function getBarcodeElement(barcode, cb) {
   var url = 'http://192.168.10.85/api/search/details/Barcode/' + barcode
 
@@ -95,7 +122,7 @@ function getElements(idx, barcodes, numItems, numTifs, numPdfs, cb) {
   })
 } */
   /*testing code  */
-    (function() {
+/*    (function() {
       HTMLImports.whenReady(function() {
         var grid = document.querySelector('#lazy');
 
@@ -120,7 +147,7 @@ function getElements(idx, barcodes, numItems, numTifs, numPdfs, cb) {
         xhr.open('GET', url, true);
         xhr.send();
       }
-    })();
+    })();*/
   </script>
   <script>
     Polymer({

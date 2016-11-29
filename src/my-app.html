@@ -98,9 +98,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             attr-for-selected="name"
             fallback-selection="view404"
             role="main">
-          <my-range-checker name="range-checker" lowEnd="{{lowEndIn}}"></my-range-checker>
-          <my-list-checker name="list-checker" lowEnd="[[lowEndIn]]"></my-list-checker>
-          <my-results-table name="results-table"></my-results-table>
+          <my-range-checker name="range-checker" low-end-in="{{lowEndIn}}"></my-range-checker>
+          <my-list-checker name="list-checker" low-end-in="[[lowEndIn]]" array-of-lines="{{arrayOfLines}}"></my-list-checker>
+          <my-results-table name="results-table" array-of-lines="[[arrayOfLines]]"></my-results-table>
           <my-view404 name="view404"></my-view404>
   </iron-pages>
       </app-header-layout>
@@ -118,10 +118,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           observer: '_pageChanged'
         },
         'lowEndIn': {
-            type: String,
-            reflectToAttribute: true,
-            notify: true,
-
+            type: String
         }
       },
 
