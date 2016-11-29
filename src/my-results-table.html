@@ -51,11 +51,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
     <template is="dom-repeat" items="[[arrayOfLines]]">
       <span>'http://192.168.10.85/api/search/details/Barcode/' + {{item}}</span><br/>
+      <span>{{_generateBarcodeUrl(item)}}</span>
     <iron-ajax
       auto
-      url=http://192.168.10.85/api/search/details/Barcode/{{item}}
+      url={{_generateBarcodeUrl(item)}}
       handle-as="json"
-      hon-response="handleResponse"></iron-ajax>
+      last-response={{data}}></iron-ajax>
        </template>
 
   </template>
@@ -73,7 +74,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
              handleResponse: function (data) {
                  this.barcodes = data.document.hits.hits;
                  alert(this.barcodes)
-             }
+             },
+             _generateBarcodeUrl: function(barcode) {
+               console.log(barcode)
+				var newURL = "http://192.168.10.85/api/search/details/Barcode/" + barcode;
+				return newURL;
+			},
          });
 /* function getBarcodeElement(barcode, cb) {
   var url = 'http://192.168.10.85/api/search/details/Barcode/' + barcode
