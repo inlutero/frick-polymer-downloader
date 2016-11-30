@@ -23,9 +23,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="my-icons.html">
+<link rel="import" href="my-doc-updater.html">
 
 <dom-module id="my-app">
   <template>
+    <my-doc-updater array-of-lines="[[arrayOfLines]]" documents="{{documents}}"></my-doc-updater>
     <style>
       :host {
         --app-primary-color: #4285f4;
@@ -100,7 +102,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             role="main">
           <my-range-checker name="range-checker" low-end-in="{{lowEndIn}}"></my-range-checker>
           <my-list-checker name="list-checker" low-end-in="[[lowEndIn]]" array-of-lines="{{arrayOfLines}}"></my-list-checker>
-          <my-results-table name="results-table" array-of-lines="[[arrayOfLines]]"></my-results-table>
+          <my-results-table name="results-table" documents="[[documents]]"></my-results-table>
           <my-view404 name="view404"></my-view404>
   </iron-pages>
       </app-header-layout>

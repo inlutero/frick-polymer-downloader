@@ -21,18 +21,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           padding: 10px;
         }
 
-        #lazy {
-          height: 300px;
-        }
       </style>
 
       <div class="card">
         <h1>Results</h1>
-        <vaadin-grid items="[[documents]]" id="lazy">
+        <vaadin-grid items="[[documents]]" rows="20" selection-mode="multi">
           <table>
             <colgroup>
-              <col name="Barcode" />
-              <col name="FileName" />
+              <col name="_source.Barcode" />
+              <col name="_source.FileName" />
               <col name="Files" />
             </colgroup>
             <thead>
@@ -45,102 +42,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </table>
         </vaadin-grid>
       </div>
-      <template is="dom-repeat" items="[[arrayOfLines]]">
-        <iron-ajax auto url="http://192.168.10.85/api/search/details/Barcode/{{item}}" handle-as="json" on-response="handleResponse"></iron-ajax>
-      </template>
     </template>
     <script>
       Polymer({
             is: 'my-results-table',
             properties: {
-              'arrayOfLines': {
-                type: Array
-              },
               'documents': {
-                type: Array,
-                notify: true,
-                value: []
+                type: Array
               }
-            },
-            handleResponse: function(event) {
-              console.log(event)
-              var response = event.detail.response
-              this.documents.push.apply(this.documents,response.documents.hits.hits)
-              console.log(this.documents)
             }
           });
-          /* function getBarcodeElement(barcode, cb) {
-            var url = 'http://192.168.10.85/api/search/details/Barcode/' + barcode
-
-            var response = {
-              items: [],
-              count: '0'
-            }
-
-            $.getJSON(url, function(result) {
-              console.log(result)
-              response.count = result.documents.hits.total
-              if (response.count > 0) {
-                $.each(result.documents.hits.hits, function(idx, hit) {
-                  var item = {}
-                  item.filename = JSON.stringify(hit._source.UTF8Name)
-                  item.barcode = barcode
-                  item.ids = JSON.stringify(hit._id)
-                  item.count = response.count
-                  response.items.push(item)
-                })
-              } else {
-                var item = {}
-                item.filename = 'Missing'
-                item.barcode = barcode
-                item.ids = ''
-                item.count = 0
-                response.items.push(item)
-              }
-              cb(response)
-            })
-          }
-
-          function getElements(idx, barcodes, numItems, numTifs, numPdfs, cb) {
-            if (idx >= barcodes.length) {
-              paginateTable(numItems, '')
-              docCounter(numTifs, numPdfs)
-              return cb()
-            }
-            getBarcodeElement(barcodes[idx], function(items) {
-              var count = addItems(items)
-              var typeCount = fileTypeCounter(items)
-              var pdfs = typeCount.pdfsCount
-              var tifs = typeCount.tifsCount
-              getElements(idx + 1, barcodes, count + numItems, numTifs + tifs, numPdfs + pdfs, cb)
-            })
-          } */
-          /*testing code  */
-          /*    (function() {
-                HTMLImports.whenReady(function() {
-                  var grid = document.querySelector('#lazy');
-
-                  grid.columns[0].renderer = function(cell) {
-                    cell.element.textContent = cell.row.index;
-                  };
-
-                  grid.items = function(params, callback) {
-                    getJSON('https://demo.vaadin.com/demo-data/1.0/people?index=' + params.index + '&count=' + params.count, function(json) {
-                      callback(json.result, json.size);
-                    });
-                  };
-                });
-
-                function getJSON(url, callback) {
-                  var xhr = new XMLHttpRequest();
-                  xhr.onreadystatechange = function() {
-                    if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                      callback(JSON.parse(xhr.responseText));
-                    }
-                  };
-                  xhr.open('GET', url, true);
-                  xhr.send();
-                }
-              })();*/
     </script>
   </dom-module>
