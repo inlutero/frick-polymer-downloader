@@ -15,36 +15,43 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <dom-module id="my-doc-updater">
     <template>
-      <template is="dom-repeat" items="[[arrayOfLines]]">
-        <iron-ajax auto url="http://192.168.10.85/api/search/details/Barcode/{{item}}" handle-as="json" on-response="handleResponse" data-item$="[[item]]"></iron-ajax>
+      <template is="dom-repeat" items="[[arrayOfLines]]" filter="_ifNotCached">
+        <iron-ajax auto url="http://192.168.10.85/api/search/details/Barcode/{{item}}" handle-as="json" on-response="handleResponse" data-item$="[[item]]" debounce-duration="500"></iron-ajax>
       </template>
     </template>
     <script>
       Polymer({
-            is: 'my-doc-updater',
-            properties: {
-              'arrayOfLines': {
-                type: Array,
-                observer: '_updateArray'
-              },
-              'documents': {
-                type: Array,
-                notify: true,
-                value: []
-              }
-            },
-            handleResponse: function(event) {
-              console.log(`fetch data for ${event.target.getAttribute('data-item')}`)
-              var response = event.detail.response
-              console.log(`response ${response.documents.hits.hits.map(function(hit){ return hit._source.FileName})}`)
-              var params = ['documents'].concat(response.documents.hits.hits)
-              this.push.apply(this, params)
-              console.log(`documents ${this.documents.map(function(hit){ return hit._source.FileName})}`)
-            },
-            _updateArray: function() {
-          /*  console.log("resetting documents")
-              this.set('documents', [])*/
-            }
-          });
+        is: 'my-doc-updater',
+        properties: {
+          'arrayOfLines': {
+            type: Array,
+          },
+          'documents': {
+            type: Array,
+            notify: true,
+            value: []
+          },
+          'cache': {
+            type: Array,
+            value: []
+          }
+        },
+        handleResponse: function(event) {
+          var response = event.detail.response
+          var params = ['documents'].concat(response.documents.hits.hits)
+          this.push.apply(this, params)
+        },
+        _ifNotCached: function(barcode) {
+          console.log(`barcode ${barcode}`)
+          if (this.cache.includes(barcode)) {
+            return false;
+          }
+          this.push('cache', barcode)
+          console.log(`cache added`)
+          return true;
+
+        }
+
+      });
     </script>
   </dom-module>
