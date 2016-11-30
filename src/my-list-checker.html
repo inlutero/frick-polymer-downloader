@@ -64,7 +64,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             type: Array,
             notify: true
         }
-
       },
       checkList: function(e) {
         if (!e.detail) {return}
@@ -73,7 +72,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var separators = [' ', '\n', ','];
           var arrayOfLines = this.listValues.split(new RegExp(separators.join('|'), '')).filter(bcode => bcode.trim().length > 0)
           this.set('arrayOfLines', arrayOfLines)
-      
         }
       }
     });

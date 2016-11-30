@@ -8,154 +8,139 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 <linl rel="import" href="../bower_components/webcomponentsjs/webcomponents-lite.min.js">
-<link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
-<link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="shared-styles.html">
+  <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
+  <link rel="import" href="../bower_components/polymer/polymer.html">
+  <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+  <link rel="import" href="shared-styles.html">
 
-<dom-module id="my-results-table">
-  <template>
-    <style include="shared-styles">
-      :host {
-        display: block;
+  <dom-module id="my-results-table">
+    <template>
+      <style include="shared-styles">
+        :host {
+          display: block;
+          padding: 10px;
+        }
 
-        padding: 10px;
-      }
-      #lazy {
-   height: 300px;
- }
-    </style>
+        #lazy {
+          height: 300px;
+        }
+      </style>
 
-    <div class="card">
-      <h1>Results</h1>
-      <h2>[[arrayOfLines]]</h2>
-      <vaadin-grid id="lazy">
-        <table>
-          <colgroup>
-            <col name="Barcode"/>
-            <col name="FileName"/>
-            <col name="Files"/>
-          </colgroup>
-          <thead>
-          <tr>
-            <th>Barcode</th>
-            <th>File Name</th>
-            <th>#</th>
-          </tr>
-          </thead>
-        </table>
-      </vaadin-grid>
-    </div>
-    <template is="dom-repeat" items="[[arrayOfLines]]">
-    <iron-ajax
-      auto
-      url='http://192.168.10.85/api/search/details/Barcode/{{item}}'
-      handle-as="json"
-      response={{data}}
-      on-response="handlResponse"></iron-ajax>
-       </template>
-  </template>
-  <script>
-  Polymer({
-             is: 'show-repositories',
-             properties: {
-                 'arrayOfLines': {
-                     type: Array
-                 },
-                 'barcodes': {
-                     type: Array
-                 },
-                 'data': {
-                   type: Array,
-                   notify: true
-                 },
-                 'documents': {
-                   type: Array,
-                   notify: true
-                 }
-             },
-             handleResponse: function(data) {
-                 this.set('documents', data.documents.hits.hits)
-                 alert('turd bucket')
-             }
-         });
-/* function getBarcodeElement(barcode, cb) {
-  var url = 'http://192.168.10.85/api/search/details/Barcode/' + barcode
-
-  var response = {
-    items: [],
-    count: '0'
-  }
-
-  $.getJSON(url, function(result) {
-    console.log(result)
-    response.count = result.documents.hits.total
-    if (response.count > 0) {
-      $.each(result.documents.hits.hits, function(idx, hit) {
-        var item = {}
-        item.filename = JSON.stringify(hit._source.UTF8Name)
-        item.barcode = barcode
-        item.ids = JSON.stringify(hit._id)
-        item.count = response.count
-        response.items.push(item)
-      })
-    } else {
-      var item = {}
-      item.filename = 'Missing'
-      item.barcode = barcode
-      item.ids = ''
-      item.count = 0
-      response.items.push(item)
-    }
-    cb(response)
-  })
-}
-
-function getElements(idx, barcodes, numItems, numTifs, numPdfs, cb) {
-  if (idx >= barcodes.length) {
-    paginateTable(numItems, '')
-    docCounter(numTifs, numPdfs)
-    return cb()
-  }
-  getBarcodeElement(barcodes[idx], function(items) {
-    var count = addItems(items)
-    var typeCount = fileTypeCounter(items)
-    var pdfs = typeCount.pdfsCount
-    var tifs = typeCount.tifsCount
-    getElements(idx + 1, barcodes, count + numItems, numTifs + tifs, numPdfs + pdfs, cb)
-  })
-} */
-  /*testing code  */
-/*    (function() {
-      HTMLImports.whenReady(function() {
-        var grid = document.querySelector('#lazy');
-
-        grid.columns[0].renderer = function(cell) {
-          cell.element.textContent = cell.row.index;
-        };
-
-        grid.items = function(params, callback) {
-          getJSON('https://demo.vaadin.com/demo-data/1.0/people?index=' + params.index + '&count=' + params.count, function(json) {
-            callback(json.result, json.size);
+      <div class="card">
+        <h1>Results</h1>
+        <vaadin-grid items="[[documents]]" id="lazy">
+          <table>
+            <colgroup>
+              <col name="Barcode" />
+              <col name="FileName" />
+              <col name="Files" />
+            </colgroup>
+            <thead>
+              <tr>
+                <th>Barcode</th>
+                <th>File Name</th>
+                <th>#</th>
+              </tr>
+            </thead>
+          </table>
+        </vaadin-grid>
+      </div>
+      <template is="dom-repeat" items="[[arrayOfLines]]">
+        <iron-ajax auto url="http://192.168.10.85/api/search/details/Barcode/{{item}}" handle-as="json" on-response="handleResponse"></iron-ajax>
+      </template>
+    </template>
+    <script>
+      Polymer({
+            is: 'my-results-table',
+            properties: {
+              'arrayOfLines': {
+                type: Array
+              },
+              'documents': {
+                type: Array,
+                notify: true,
+                value: []
+              }
+            },
+            handleResponse: function(event) {
+              console.log(event)
+              var response = event.detail.response
+              this.documents.push.apply(this.documents,response.documents.hits.hits)
+              console.log(this.documents)
+            }
           });
-        };
-      });
+          /* function getBarcodeElement(barcode, cb) {
+            var url = 'http://192.168.10.85/api/search/details/Barcode/' + barcode
 
-      function getJSON(url, callback) {
-        var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function() {
-          if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-            callback(JSON.parse(xhr.responseText));
+            var response = {
+              items: [],
+              count: '0'
+            }
+
+            $.getJSON(url, function(result) {
+              console.log(result)
+              response.count = result.documents.hits.total
+              if (response.count > 0) {
+                $.each(result.documents.hits.hits, function(idx, hit) {
+                  var item = {}
+                  item.filename = JSON.stringify(hit._source.UTF8Name)
+                  item.barcode = barcode
+                  item.ids = JSON.stringify(hit._id)
+                  item.count = response.count
+                  response.items.push(item)
+                })
+              } else {
+                var item = {}
+                item.filename = 'Missing'
+                item.barcode = barcode
+                item.ids = ''
+                item.count = 0
+                response.items.push(item)
+              }
+              cb(response)
+            })
           }
-        };
-        xhr.open('GET', url, true);
-        xhr.send();
-      }
-    })();*/
-  </script>
-  <script>
-    Polymer({
-      is: 'my-results-table'
-    });
-  </script>
-</dom-module>
+
+          function getElements(idx, barcodes, numItems, numTifs, numPdfs, cb) {
+            if (idx >= barcodes.length) {
+              paginateTable(numItems, '')
+              docCounter(numTifs, numPdfs)
+              return cb()
+            }
+            getBarcodeElement(barcodes[idx], function(items) {
+              var count = addItems(items)
+              var typeCount = fileTypeCounter(items)
+              var pdfs = typeCount.pdfsCount
+              var tifs = typeCount.tifsCount
+              getElements(idx + 1, barcodes, count + numItems, numTifs + tifs, numPdfs + pdfs, cb)
+            })
+          } */
+          /*testing code  */
+          /*    (function() {
+                HTMLImports.whenReady(function() {
+                  var grid = document.querySelector('#lazy');
+
+                  grid.columns[0].renderer = function(cell) {
+                    cell.element.textContent = cell.row.index;
+                  };
+
+                  grid.items = function(params, callback) {
+                    getJSON('https://demo.vaadin.com/demo-data/1.0/people?index=' + params.index + '&count=' + params.count, function(json) {
+                      callback(json.result, json.size);
+                    });
+                  };
+                });
+
+                function getJSON(url, callback) {
+                  var xhr = new XMLHttpRequest();
+                  xhr.onreadystatechange = function() {
+                    if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                      callback(JSON.parse(xhr.responseText));
+                    }
+                  };
+                  xhr.open('GET', url, true);
+                  xhr.send();
+                }
+              })();*/
+    </script>
+  </dom-module>
