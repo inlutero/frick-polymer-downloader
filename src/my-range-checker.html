@@ -11,54 +11,69 @@
     <style include="shared-styles">
       :host {
         display: block;
-
         padding: 16px;
       }
     </style>
     <style is="custom-style">
-   paper-button {
-     --paper-button: {
-       @apply(--layout-vertical);
-       @apply(--layout-right-right);
-
-    background-color: var(--paper-indigo-500);
-    color: white;
-    };
-  }
- </style>
-<div class="card">
-    <h1>Range Checker</h1><div style="margin-bottom:15px;">
-From <paper-input label="Starting Number" id="lowEnd" value="{{ lowEndIn }}"></paper-input> to <paper-input label="Ending Number" id="highEnd" value="{{highEndIn}}">
-</paper-input></div></div><div>{{ lowEndIn }}, {{highEndIn}}</div>
+      paper-button {
+        --paper-button: {
+          @apply(--layout-vertical);
+          @apply(--layout-right-right);
+          background-color: var(--paper-indigo-500);
+          color: white;
+        }
+        ;
+      }
+    </style>
+    <div class="card">
+      <h1>Range Checker</h1>
+      <div style="margin-bottom:15px;">
+        From
+        <paper-input label="Starting Number" id="lowEnd" value="{{lowEndIn}}" auto-validate pattern="[0-9]*" error-message="numbers only!"></paper-input> to
+        <paper-input label="Ending Number" id="highEnd" on-value-changed="checkRange" value="{{highEndIn}}" auto-validate pattern="[0-9]*" error-message="numbers only!">
+        </paper-input>
+      </div>
+    </div>
+    <div>{{ lowEndIn }}, {{highEndIn}}</div>
   </template>
   <!-- Creates the element's prototype and registers it -->
   <script>
-  window.addEventListener('checkRange', function (e) {
-           alert("This does fire");
-       });
+    window.addEventListener('checkRange', function(e) {
+      alert("This does fire");
+    });
     Polymer({
       is: 'my-range-checker',
       properties: {
-       'lowEndIn': {
-           type: String,
-           notify: true
+        'lowEndIn': {
+          type: String,
+          notify: true
 
-       },
-       'highEndIn': {
-           type: String,
-           notify: true
-       },
+        },
+        'highEndIn': {
+          type: String,
+          notify: true
+        },
+        'rangeListArray': {
+          type: Array,
+          notify: true,
+          value: []
+        }
 
-   },
-      checkRange: function() {
-          var list = [];
-      if (this.lowEndIn >= 0 && this.highEndIn >= this.lowEndIn) {
-        for (var i = this.lowEndIn; i <= this.highEndIn; i++) {
-      list.push(i);
-    }
-    alert(list)
+      },
+      checkRange: function(e) {
+        if (!e.detail) {
+          return
+        }
+        this.debounce('checkList', function() {
+          var rangeListArray = []
+          if (this.lowEndIn > 0 && this.highEndIn >= this.lowEndIn) {
+            for (var i = this.lowEndIn; i <= this.highEndIn; i++) {
+              this.rangeListArray.push(i);
+            }
+          }
+          console.log(`new array ${JSON.stringify(this.rangeListArray)}`)
+        }, 300);
       }
-    }
     });
   </script>
 </dom-module>
