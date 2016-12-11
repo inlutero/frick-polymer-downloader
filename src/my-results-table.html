@@ -23,20 +23,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       </style>
 
-      <div class="card">
+      <div class="card wideLay">
         <h1>Results</h1>
-        <vaadin-grid items="[[documents]]" rows="20" selection-mode="multi">
+        <vaadin-grid items="[[documents]]" rows="20" selection-mode="multi" doc-count="[[docCount]]">
           <table>
             <colgroup>
               <col name="_source.Barcode" sortable/>
               <col name="_source.FileName" sortable/>
-              <col name="Files" />
+              <col name="[[docCount]]" />
             </colgroup>
             <thead>
               <tr>
                 <th>Barcode</th>
                 <th>File Name</th>
-                <th>#</th>
+                <th>Group Count</th>
               </tr>
             </thead>
           </table>

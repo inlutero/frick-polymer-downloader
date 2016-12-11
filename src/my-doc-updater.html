@@ -31,6 +31,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             notify: true,
             value: []
           },
+          'docCount': {
+            type: String,
+            notify: true
+          },
           'cache': {
             type: Array,
             value: []
@@ -38,8 +42,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         handleResponse: function(event) {
           var response = event.detail.response
+          var docCount = response.documents.hits.total
+          console.log (`${docCount}`)
           var params = ['documents'].concat(response.documents.hits.hits)
           this.push.apply(this, params)
+          this.documents.push({docCount: ['docCount']})
+          console.log (`${JSON.stringify(this.documents)}`)
         },
         _ifNotCached: function(barcode) {
           console.log(`barcode ${barcode}`)

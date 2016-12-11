@@ -25,16 +25,16 @@
         ;
       }
     </style>
-    <div class="card">
+    <div class="card halfCard">
       <h1>Range Checker</h1>
       <div style="margin-bottom:15px;">
         From
         <paper-input label="Starting Number" id="lowEnd" value="{{lowEndIn}}" auto-validate pattern="[0-9]*" error-message="numbers only!"></paper-input> to
         <paper-input label="Ending Number" id="highEnd" on-value-changed="checkRange" value="{{highEndIn}}" auto-validate pattern="[0-9]*" error-message="numbers only!">
         </paper-input>
-      </div>
+      </div>    
     </div>
-    <div>{{ lowEndIn }}, {{highEndIn}}</div>
+
   </template>
   <!-- Creates the element's prototype and registers it -->
   <script>
@@ -65,10 +65,9 @@
           return
         }
         this.debounce('checkList', function() {
-          var rangeListArray = []
           if (this.lowEndIn > 0 && this.highEndIn >= this.lowEndIn) {
-            for (var i = this.lowEndIn; i <= this.highEndIn; i++) {
-              this.rangeListArray.push(i);
+            for (var i = this.lowEndIn * 1; i <= this.highEndIn; i++) {
+              this.rangeListArray.push(JSON.stringify(i));
             }
           }
           console.log(`new array ${JSON.stringify(this.rangeListArray)}`)
