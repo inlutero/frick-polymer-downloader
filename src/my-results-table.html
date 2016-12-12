@@ -11,6 +11,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
   <link rel="import" href="../bower_components/polymer/polymer.html">
   <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+  <link rel="import" href="../bower_components/paper-input/paper-input.html">
   <link rel="import" href="shared-styles.html">
 
   <dom-module id="my-results-table">
@@ -21,7 +22,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           padding: 10px;
         --vaadin-grid-row-height: 100px;
         }
-    
+
       </style>
 
       <div class="card wideLay">
@@ -29,8 +30,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <vaadin-grid id="mainGrid" items="[[documents]]" rows="20" selection-mode="multi">
           <table>
             <colgroup>
-              <col name="_source.Barcode" sortable/>
-              <col name="_source.FileName" sortable/>
+              <col name="_source.Barcode" sortable="" sort-direction="asc" />
+              <col name="_source.FileName" sortable="" />
               <col name="_source.total" />
               <col name="_source.imageUrl" />
             </colgroup>
@@ -40,6 +41,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <th>File Name</th>
                 <th>Group Count</th>
                 <th>Thumb</th>
+              </tr>
+              <tr>
+                <th></th>
+                <th><paper-input id="fileFilter" label="Filter"></paper-input></th>
               </tr>
             </thead>
 
@@ -54,8 +59,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     grid.columns[3].renderer = function(cell) {
          cell.element.innerHTML = cell.data;
        };
+
        // end-code
      });
+
       Polymer({
             is: 'my-results-table',
             properties: {
