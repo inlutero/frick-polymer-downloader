@@ -19,31 +19,43 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         :host {
           display: block;
           padding: 10px;
+        --vaadin-grid-row-height: 100px;
         }
-
+    
       </style>
 
       <div class="card wideLay">
         <h1>Results</h1>
-        <vaadin-grid items="[[documents]]" rows="20" selection-mode="multi" doc-count="[[docCount]]">
+        <vaadin-grid id="mainGrid" items="[[documents]]" rows="20" selection-mode="multi">
           <table>
             <colgroup>
               <col name="_source.Barcode" sortable/>
               <col name="_source.FileName" sortable/>
-              <col name="[[docCount]]" />
+              <col name="_source.total" />
+              <col name="_source.imageUrl" />
             </colgroup>
             <thead>
               <tr>
                 <th>Barcode</th>
                 <th>File Name</th>
                 <th>Group Count</th>
+                <th>Thumb</th>
               </tr>
             </thead>
+
           </table>
         </vaadin-grid>
       </div>
     </template>
     <script>
+    HTMLImports.whenReady(function() {
+        // code
+    var grid = document.querySelector('#mainGrid');
+    grid.columns[3].renderer = function(cell) {
+         cell.element.innerHTML = cell.data;
+       };
+       // end-code
+     });
       Polymer({
             is: 'my-results-table',
             properties: {

@@ -43,10 +43,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         handleResponse: function(event) {
           var response = event.detail.response
           var docCount = response.documents.hits.total
-          console.log (`${docCount}`)
+          var subResponse = response.documents.hits.hits
+          for (i in subResponse) {
+          subResponse[i]._source.total = JSON.stringify(docCount)
+          subResponse[i]._source.imageUrl = '<img src="http://images.digitalcollections.frick.org:80/media/id/' +  subResponse[i]._id + '/thumb" height="100">'
+          console.log (`${JSON.stringify(subResponse[i])}`) }
           var params = ['documents'].concat(response.documents.hits.hits)
           this.push.apply(this, params)
-          this.documents.push({docCount: ['docCount']})
           console.log (`${JSON.stringify(this.documents)}`)
         },
         _ifNotCached: function(barcode) {
