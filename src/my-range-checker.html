@@ -32,14 +32,14 @@
         <paper-input label="Starting Number" id="lowEnd" value="{{lowEndIn}}" auto-validate pattern="[0-9]*" error-message="numbers only!"></paper-input> to
         <paper-input label="Ending Number" id="highEnd" on-value-changed="checkRange" value="{{highEndIn}}" auto-validate pattern="[0-9]*" error-message="numbers only!">
         </paper-input>
-      </div>    
+      </div>
     </div>
 
   </template>
   <!-- Creates the element's prototype and registers it -->
   <script>
     window.addEventListener('checkRange', function(e) {
-      alert("This does fire");
+      console.log('This does fire');
     });
     Polymer({
       is: 'my-range-checker',
