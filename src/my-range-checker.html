@@ -34,13 +34,28 @@
         </paper-input>
       </div>
     </div>
-
+    <div class="card halfCard">
+      <h1>Results</h1>
+      <vaadin-grid items="[[documents]]" rows="20" selection-mode="multi">
+        <table>
+          <colgroup>
+            <col name="_source.Barcode" sortable/>
+            <col name="_source.FileName" sortable/>
+            <col name="_source.total" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th>Barcode</th>
+              <th>File Name</th>
+              <th>Group Count</th>
+            </tr>
+          </thead>
+        </table>
+      </vaadin-grid>
+    </div>
   </template>
   <!-- Creates the element's prototype and registers it -->
   <script>
-    window.addEventListener('checkRange', function(e) {
-      console.log('This does fire');
-    });
     Polymer({
       is: 'my-range-checker',
       properties: {
@@ -56,7 +71,7 @@
         'rangeListArray': {
           type: Array,
           notify: true,
-          value: []
+          reflectToAttribute: true
         }
 
       },
@@ -65,9 +80,11 @@
           return
         }
         this.debounce('checkList', function() {
+          var rangeListArray = []
           if (this.lowEndIn > 0 && this.highEndIn >= this.lowEndIn) {
             for (var i = this.lowEndIn * 1; i <= this.highEndIn; i++) {
-              this.rangeListArray.push(JSON.stringify(i));
+              rangeListArray.push(JSON.stringify(i));
+              this.set('rangeListArray', rangeListArray)
             }
           }
           console.log(`new array ${JSON.stringify(this.rangeListArray)}`)

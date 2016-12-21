@@ -1,0 +1,115 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<linl rel="import" href="../bower_components/webcomponentsjs/webcomponents-lite.min.js">
+  <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
+  <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+  <link rel="import" href="../bower_components/iron-autogrow-textarea/iron-autogrow-textarea.html">
+  <link rel="import" href="shared-styles.html">
+
+  <dom-module id="my-downloader">
+    <template>
+      <style include="shared-styles">
+        :host {
+          display: block;
+          padding: 10px;
+        }
+      </style>
+      <div class="card">
+        <iron-autogrow-textarea on-value-changed="" value="" id="text1" rows="15" style="width:100%;margin-bottom:15px;" placeholder="Cut and paste or drag and drop barcode list text here."></iron-autogrow-textarea>
+      </div>
+      <iron-ajax auto url="http://192.168.10.85/media/zip" handle-as="json" method="POST" body="[[getAjaxBody(dataArray)]]" content-type="application/json; charset=UTF-8" on-response="handleResponse" debounce-duration="500">
+      </iron-ajax>
+    </template>
+    <script>
+      Polymer({
+        is: 'my-downloader',
+        properties: {
+          'dataArray': {
+            type: Object
+          },
+          'downloadsArray': {
+            type: Array
+          }
+        },
+        getAjaxBody: function(dataArray) {
+          console.log(`this is the ajax body ${JSON.stringify(this.dataArray)}`)
+          return JSON.stringify(this.dataArray);
+        },
+        handleResponse: function(event) {
+          console.log(`${JSON.stringify(event.detail.response.file_url)}`)
+          var result = event.detail.response
+  var downURL = 'http://192.168.10.85'
+              zipLoc = downURL + result.file_url
+              console.log(`zip location is ${zipLoc}`)
+            window.location = zipLoc;
+        },
+        ready: function() {
+          var dataArray = []
+          dataArray = {
+            "ids": ["0ac3dafeecee3f1b0c8376d51247b2b9"],
+            "mapper": {
+              "fields": ["Creator", "WorkTitle", "WorkDate_display", "WorkSubject", "WorkSubject_agent", "WorkSubject_location", "Image_rightsHolder", "Image_rightsStatus", "Image_creditLine", "ContainerID"],
+              "friendly": ["Creator", "Title", "Date", "Subjects", "Subject(Names)", "Subject(Places)", "Rights Holder", "Rights Status", "Credit Line"],
+              "shown": ["Creator", "WorkTitle", "WorkDate_display", "WorkSubject", "WorkSubject_agent", "WorkSubject_location"],
+              "summary": ["Creator", "WorkTitle", "WorkDate_display"],
+              "toFriendly": {
+                "Creator": "Creator",
+                "WorkTitle": "Title",
+                "WorkDate_display": "Date",
+                "WorkSubject": "Subjects",
+                "WorkSubject_agent": "Subject(Names)",
+                "WorkSubject_location": "Subject(Places)",
+                "Image_rightsHolder": "Rights Holder",
+                "Image_rightsStatus": "Rights Status",
+                "Image_creditLine": "Credit Line"
+              },
+              "toField": {
+                "Creator": "Creator",
+                "Title": "WorkTitle",
+                "Date": "WorkDate_display",
+                "Subjects": "WorkSubject",
+                "Subject(Names)": "WorkSubject_agent",
+                "Subject(Places)": "WorkSubject_location",
+                "Rights Holder": "Image_rightsHolder",
+                "Rights Status": "Image_rightsStatus",
+                "Credit Line": "Image_creditLine"
+              },
+              "facetsMap": {
+                "toField": {
+                  "Creator_source": "Creator",
+                  "WorkTitle_source": "WorkTitle",
+                  "WorkDate_display_source": "WorkDate_display",
+                  "WorkSubject_source": "WorkSubject",
+                  "WorkSubject_agent_source": "WorkSubject_agent",
+                  "WorkSubject_location_source": "WorkSubject_location",
+                  "Image_rightsHolder_source": "Image_rightsHolder",
+                  "Image_rightsStatus": "Image_rightsStatus",
+                  "Image_creditLine_source": "Image_creditLine"
+                },
+                "toFacet": {
+                  "Creator": "Creator_source",
+                  "WorkTitle": "WorkTitle_source",
+                  "WorkDate_display": "WorkDate_display_source",
+                  "WorkSubject": "WorkSubject_source",
+                  "WorkSubject_agent": "WorkSubject_agent_source",
+                  "WorkSubject_location": "WorkSubject_location_source",
+                  "Image_rightsHolder": "Image_rightsHolder_source",
+                  "Image_rightsStatus": "Image_rightsStatus",
+                  "Image_creditLine": "Image_creditLine_source"
+                }
+              }
+            }
+          }
+          this.set('dataArray', dataArray)
+          console.log(`${this.dataArray}`)
+        }
+      });
+    </script>
+  </dom-module>

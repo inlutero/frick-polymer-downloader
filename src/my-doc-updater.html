@@ -15,7 +15,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <dom-module id="my-doc-updater">
     <template>
-      <template is="dom-repeat" items="[[arrayOfLines]]" filter="_ifNotCached">
+      <template is="dom-repeat" items="{{itemsArray}}" filter="_ifNotCached">
         <iron-ajax auto url="http://192.168.10.85/api/search/details/Barcode/{{item}}" handle-as="json" on-response="handleResponse" data-item$="[[item]]" debounce-duration="500"></iron-ajax>
       </template>
     </template>
@@ -23,8 +23,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       Polymer({
         is: 'my-doc-updater',
         properties: {
+          'itemsArray': {
+            type: Array,
+            notify: true,
+            value: []
+          },
           'arrayOfLines': {
             type: Array,
+            observer: '_setListToItemsArray'
+          },
+          'rangeListArray': {
+            type: Array,
+            observer: '_setRangeToItemsArray'
           },
           'documents': {
             type: Array,
@@ -45,13 +55,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var docCount = response.documents.hits.total
           var subResponse = response.documents.hits.hits
           for (i in subResponse) {
-          subResponse[i]._source.total = JSON.stringify(docCount)
-          subResponse[i]._source.imageUrl = '<img src="http://images.digitalcollections.frick.org:80/media/id/' +  subResponse[i]._id + '/thumb" height="100">'
-        /*  console.log (`${JSON.stringify(subResponse[i])}`) */}
+            subResponse[i]._source.total = JSON.stringify(docCount)
+            subResponse[i]._source.imageUrl = '<img src="http://images.digitalcollections.frick.org:80/media/id/' + subResponse[i]._id + '/thumb" height="100">'
+              /*  console.log (`${JSON.stringify(subResponse[i])}`) */
+          }
           var params = ['documents'].concat(response.documents.hits.hits)
           this.push.apply(this, params)
-        /*  console.log (`${JSON.stringify(this.documents)}`)*/
-          this.fire('responseSignal')
+            /*  console.log (`${JSON.stringify(this.documents)}`)*/
         },
         _ifNotCached: function(barcode) {
           console.log(`barcode ${barcode}`)
@@ -62,6 +72,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           console.log(`cache added`)
           return true;
 
+        },
+        _setListToItemsArray: function() {
+          this.documents = []
+          this.itemsArray = []
+          this.itemsArray = this.arrayOfLines.slice();
+          console.log(`items array is set to list ${this.itemsArray}`)
+        },
+        _setRangeToItemsArray: function() {
+          this.documents = []
+          this. itemsArray = []
+          this.itemsArray = this.rangeListArray.slice();
+          console.log(`items array is set to range ${this.itemsArray}`)
         }
 
       });
