@@ -17,7 +17,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <dom-module id="my-results-table">
   <template>
     <style include="shared-styles">
-      :host {
+       :host {
         display: block;
         padding: 10px;
         --vaadin-grid-row-height: 100px;
@@ -57,23 +57,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script>
     HTMLImports.whenReady(function() {
 
-      Polymer({
-        is: 'my-results-table',
-        properties: {
-          'documents': {
-            type: Array
-          }
-        },
-        attached: function() {
-          var grid = this.$.mainGrid;
-          var self = this;
-         grid.then(function() {
-           grid.columns[3].renderer = function (cell) {
-             cell.element.innerHTML = cell.data;
-           }
-         })
-        }
-      });
-    });
+          Polymer({
+            is: 'my-results-table',
+            properties: {
+              'documents': {
+                type: Array
+              }
+            },
+            attached: function() {
+              var grid = this.$.mainGrid;
+              var self = this;
+              grid.then(function() {
+                grid.columns[3].renderer = function(cell) {
+                  cell.element.innerHTML = cell.data;
+                }
+                grid.addEventListener('selected-items-changed', function() {
+                  console.log('Items:');
+                  grid.selection.selected(function(index) {
+                    console.log(grid.items[index]._id)
+                  })
+                })
+              })
+            }
+          })
+        });
   </script>
 </dom-module>
