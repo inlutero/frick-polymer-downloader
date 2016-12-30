@@ -7,24 +7,33 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
-<linl rel="import" href="../bower_components/webcomponentsjs/webcomponents-lite.min.js">
+  <linl rel="import" href="../bower_components/webcomponentsjs/webcomponents-lite.min.js">
   <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
   <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
-  <link rel="import" href="../bower_components/iron-autogrow-textarea/iron-autogrow-textarea.html">
+  <link rel="import" href="../bower_components/paper-button/paper-button.html">
   <link rel="import" href="shared-styles.html">
 
   <dom-module id="my-downloader">
     <template>
       <style include="shared-styles">
-        :host {
+         :host {
           display: block;
           padding: 10px;
         }
       </style>
-      <div class="card" selected-ids="[[selectedIds]]">
-        <iron-autogrow-textarea on-value-changed="" value="" id="text1" rows="15" style="width:100%;margin-bottom:15px;" placeholder="Cut and paste or drag and drop barcode list text here."></iron-autogrow-textarea>
-      </div>
-      <iron-ajax auto url="http://192.168.10.85/media/zip" handle-as="json" method="POST" body="[[getAjaxBody(dataArray)]]" content-type="application/json; charset=UTF-8" on-response="handleResponse" debounce-duration="500">
+      <style is="custom-style">
+        paper-button {
+          --paper-button: {
+            @apply(--layout-vertical);
+            @apply(--layout-right-right);
+            background-color: var(--paper-indigo-500);
+            color: white;
+          }
+          ;
+        }
+      </style>
+      <paper-button selected-ids="[[selectedIds]]" on-click="requestAjax">Download Selected</paper-button>
+      <iron-ajax  id="ironajax" url="http://192.168.10.85/media/zip" handle-as="json" method="POST" body="[[getAjaxBody(dataArray)]]" content-type="application/json; charset=UTF-8" on-response="handleResponse" debounce-duration="500">
       </iron-ajax>
     </template>
     <script>
@@ -48,16 +57,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         handleResponse: function(event) {
           console.log(`${JSON.stringify(event.detail.response.file_url)}`)
           var result = event.detail.response
-  var downURL = 'http://192.168.10.85'
-              zipLoc = downURL + result.file_url
-              console.log(`zip location is ${zipLoc}`)
-            window.location = zipLoc;
+          var downURL = 'http://192.168.10.85'
+          zipLoc = downURL + result.file_url
+          console.log(`zip location is ${zipLoc}`)
+          window.location = zipLoc;
         },
-        attached: function() {
+      //  requestAjax: function() {
+      //    this.$.ironajax.generateRequest();
+//},
+        requestAjax: function() {
           var dataArray = []
           console.log(`passed ids ${JSON.stringify(this.selectedIds)}`)
           dataArray = {
-            "ids": ["eeff3900560866edfc0dff95da6938cd"],
+            "ids": [],
             "mapper": {
               "fields": ["Creator", "WorkTitle", "WorkDate_display", "WorkSubject", "WorkSubject_agent", "WorkSubject_location", "Image_rightsHolder", "Image_rightsStatus", "Image_creditLine", "ContainerID"],
               "friendly": ["Creator", "Title", "Date", "Subjects", "Subject(Names)", "Subject(Places)", "Rights Holder", "Rights Status", "Credit Line"],
@@ -113,7 +125,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
           dataArray.ids = this.selectedIds
           this.set('dataArray', dataArray)
-          console.log(`${this.dataArray}`)
+          console.log(`ajax request generated`)
+          this.$.ironajax.generateRequest();
         }
       });
     </script>
