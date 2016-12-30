@@ -14,7 +14,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="shared-styles.html">
 
-<dom-module id="my-results-table">
+<dom-module id="my-results-table" >
   <template>
     <style include="shared-styles">
        :host {
@@ -57,29 +57,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script>
     HTMLImports.whenReady(function() {
 
-          Polymer({
-            is: 'my-results-table',
-            properties: {
-              'documents': {
-                type: Array
-              }
-            },
-            attached: function() {
-              var grid = this.$.mainGrid;
-              var self = this;
-              grid.then(function() {
-                grid.columns[3].renderer = function(cell) {
-                  cell.element.innerHTML = cell.data;
-                }
-                grid.addEventListener('selected-items-changed', function() {
-                  console.log('Items:');
-                  grid.selection.selected(function(index) {
-                    console.log(grid.items[index]._id)
-                  })
-                })
-              })
+      Polymer({
+        is: 'my-results-table',
+        properties: {
+          'documents': {
+            type: Array
+          },
+          'selectedIds': {
+            type: Array,
+            notify: true,
+            value: []
+          }
+        },
+        attached: function() {
+          var grid = this.$.mainGrid;
+          var self = this;
+          var selectedIds = []
+          var _THIS = this
+          grid.then(function() {
+            grid.columns[3].renderer = function(cell) {
+              cell.element.innerHTML = cell.data;
             }
+            grid.addEventListener('selected-items-changed', function() {
+              selectedIds = []
+              grid.selection.selected(function(index) {
+              selectedIds.push(grid.items[index]._id)
+              })
+              _THIS.set(`selectedIds`, selectedIds)
+            })
           })
-        });
+        }
+      })
+    });
   </script>
 </dom-module>

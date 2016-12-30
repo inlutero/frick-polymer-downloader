@@ -103,8 +103,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             role="main">
           <my-range-checker name="range-checker" range-list-array="{{rangeListArray}}" documents="[[documents]]" doc-count="[[docCount]]"></my-range-checker>
           <my-list-checker name="list-checker" array-of-lines="{{arrayOfLines}}" documents="[[documents]]" doc-count="[[docCount]]"></my-list-checker>
-          <my-results-table name="results-table" documents="[[documents]]"></my-results-table>
-          <my-downloader name="downloader"></my-downloader>
+          <my-results-table name="results-table" documents="[[documents]]" selected-ids="{{selectedIds}}"></my-results-table>
+          <my-downloader name="downloader" selected-ids="[[selectedIds]]"></my-downloader>
           <my-view404 name="view404"></my-view404>
   </iron-pages>
       </app-header-layout>
