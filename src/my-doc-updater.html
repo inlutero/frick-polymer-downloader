@@ -26,6 +26,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           'itemsArray': {
             type: Array,
             notify: true,
+            reflectToAttribute: true,
             value: []
           },
           'arrayOfLines': {
@@ -74,14 +75,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         },
         _setListToItemsArray: function() {
-          this.documents = []
           this.itemsArray = []
           this.itemsArray = this.arrayOfLines.slice();
           console.log(`items array is set to list ${this.itemsArray}`)
         },
         _setRangeToItemsArray: function() {
           this.documents = []
-          this. itemsArray = []
+          this.itemsArray = []
+          this.arrayOfLines = []
           this.itemsArray = this.rangeListArray.slice();
           console.log(`items array is set to range ${this.itemsArray}`)
         }

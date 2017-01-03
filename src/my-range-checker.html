@@ -71,11 +71,13 @@
         'rangeListArray': {
           type: Array,
           notify: true,
-          reflectToAttribute: true
+          reflectToAttribute: true,
+          value: []
         }
 
       },
       checkRange: function(e) {
+        var _THIS = this;
         if (!e.detail) {
           return
         }
@@ -84,11 +86,11 @@
           if (this.lowEndIn > 0 && this.highEndIn >= this.lowEndIn) {
             for (var i = this.lowEndIn * 1; i <= this.highEndIn; i++) {
               rangeListArray.push(JSON.stringify(i));
-              this.set('rangeListArray', rangeListArray)
             }
           }
-          console.log(`new array ${JSON.stringify(this.rangeListArray)}`)
+          _THIS.set('rangeListArray', rangeListArray)
         }, 300);
+        console.log(`new array ${JSON.stringify(this.rangeListArray)}`)
       }
     });
   </script>
