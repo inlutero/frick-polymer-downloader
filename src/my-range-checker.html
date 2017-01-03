@@ -83,7 +83,7 @@
         }
         this.debounce('checkList', function() {
           var rangeListArray = []
-          if (this.lowEndIn > 0 && this.highEndIn >= this.lowEndIn) {
+          if (parseInt(this.lowEndIn) > 0 && parseInt(this.highEndIn) >= parseInt(this.lowEndIn)) {
             for (var i = this.lowEndIn * 1; i <= this.highEndIn; i++) {
               rangeListArray.push(JSON.stringify(i));
             }

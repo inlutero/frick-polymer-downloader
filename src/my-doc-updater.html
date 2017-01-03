@@ -65,25 +65,35 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             /*  console.log (`${JSON.stringify(this.documents)}`)*/
         },
         _ifNotCached: function(barcode) {
-          console.log(`barcode ${barcode}`)
+          //console.log(`barcode ${barcode}`)
           if (this.cache.includes(barcode)) {
             return false;
           }
           this.push('cache', barcode)
-          console.log(`cache added`)
+            //console.log(`cache added`)
           return true;
 
         },
         _setListToItemsArray: function() {
+          if (this.arrayOfLines == '') {
+            this.documents = []
+            this.itemsArray = []
+            this.cache = []
+            this.set('itemsArray', itemsArray)
+            console.log(`input text is empty`)
+          }
           this.itemsArray = []
-          this.itemsArray = this.arrayOfLines.slice();
+          var itemsArray = this.arrayOfLines.slice();
+          this.set('itemsArray',itemsArray)
           console.log(`items array is set to list ${this.itemsArray}`)
         },
         _setRangeToItemsArray: function() {
           this.documents = []
+          this.cache = []
           this.itemsArray = []
           this.arrayOfLines = []
-          this.itemsArray = this.rangeListArray.slice();
+          var itemsArray = this.rangeListArray.slice();
+          this.set('itemsArray',itemsArray)
           console.log(`items array is set to range ${this.itemsArray}`)
         }
 
