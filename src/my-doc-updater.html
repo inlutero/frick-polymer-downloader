@@ -7,7 +7,7 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
-<linl rel="import" href="../bower_components/webcomponentsjs/webcomponents-lite.min.js">
+  <link rel="import" href="../bower_components/webcomponentsjs/webcomponents-lite.min.js">
   <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
   <link rel="import" href="../bower_components/polymer/polymer.html">
   <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
@@ -82,7 +82,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.set('itemsArray', itemsArray)
             console.log(`input text is empty`)
           }
-          this.itemsArray = []
+          this.rangeListArray = []
           var itemsArray = this.arrayOfLines.slice();
           this.set('itemsArray',itemsArray)
           console.log(`items array is set to list ${this.itemsArray}`)
@@ -91,7 +91,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.documents = []
           this.cache = []
           this.itemsArray = []
-          this.arrayOfLines = []
           var itemsArray = this.rangeListArray.slice();
           this.set('itemsArray',itemsArray)
           console.log(`items array is set to range ${this.itemsArray}`)
