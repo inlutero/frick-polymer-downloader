@@ -81,6 +81,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               this.documents = [];
               this.cache =[];
           }
+            if (this.arrayOfLines == '') {
+                this.documents = [];
+                this.itemsArray = [];
+                this.cache = [];
+                this.set('itemsArray', itemsArray);
+                console.log(`input text is empty`)
+            }
             var itemsArray = this.arrayOfLines.slice();
           this.set('itemsArray',itemsArray);
           console.log(`items array is set to list ${this.itemsArray}`)

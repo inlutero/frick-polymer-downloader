@@ -22,6 +22,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         padding: 10px;
         --vaadin-grid-row-height: 100px;
       }
+
     </style>
 
     <div class="card wideLay">
@@ -29,11 +30,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <vaadin-grid id="mainGrid" items="[[documents]]" rows="20" selection-mode="multi" onchange="">
         <table id="mainTable">
           <colgroup>
-            <col name="_source.Barcode" sortable="" sort-direction="asc" />
-            <col name="_source.FileName" sortable="" />
+            <col name="_source.Barcode" />
+            <col name="_source.FileName" sortable  sort-direction="asc"/>
             <col name="_source.total" />
             <col name="_source.imageUrl" />
-            <col name="_id" />
+            <col name="_source.getTiff" />
+            <col name="_id" hidden/>
           </colgroup>
           <thead>
             <tr>
@@ -45,7 +47,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <tr>
               <th></th>
               <th>
-                <paper-input id="fileFilter" label="Filter"></paper-input>
+
               </th>
             </tr>
           </thead>
@@ -72,17 +74,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         attached: function() {
           var grid = this.$.mainGrid;
           var self = this;
-          var selectedIds = []
-          var _THIS = this
+          var selectedIds = [];
+          var _THIS = this;
           grid.then(function() {
             grid.columns[3].renderer = function(cell) {
               cell.element.innerHTML = cell.data;
-            }
+            };
+              grid.columns[4].renderer = function(cell) {
+                  cell.element.innerHTML = cell.data;
+              };
+
             grid.addEventListener('selected-items-changed', function() {
-              selectedIds = []
+              selectedIds = [];
               grid.selection.selected(function(index) {
               selectedIds.push(grid.items[index]._id)
-              })
+              });
               _THIS.set(`selectedIds`, selectedIds)
             })
           })
