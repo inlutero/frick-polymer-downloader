@@ -1,0 +1,109 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+  <link rel="import" href="../bower_components/webcomponentsjs/webcomponents-lite.min.js">
+  <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
+  <link rel="import" href="../bower_components/polymer/polymer.html">
+  <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+  <link rel="import" href="shared-styles.html">
+
+  <dom-module id="my-doc-updater">
+    <template>
+      <template is="dom-repeat" items="{{itemsArray}}" filter="_ifNotCached">
+        <iron-ajax auto url="http://192.168.10.85/api/search/details/Barcode/{{item}}" handle-as="json" on-response="handleResponse" data-item$="[[item]]" debounce-duration="500"></iron-ajax>
+      </template>
+    </template>
+    <script>
+      Polymer({
+        is: 'my-doc-updater',
+        properties: {
+          'itemsArray': {
+            type: Array,
+            notify: true,
+            reflectToAttribute: true,
+            value: []
+          },
+          'arrayOfLines': {
+            type: Array,
+            observer: '_setListToItemsArray'
+          },
+          'rangeListArray': {
+            type: Array,
+            observer: '_setRangeToItemsArray'
+          },
+          'documents': {
+            type: Array,
+            notify: true,
+            value: []
+          },
+          'docCount': {
+            type: String,
+            notify: true
+          },
+          'cache': {
+            type: Array,
+            value: []
+          }
+        },
+        handleResponse: function(event) {
+          var response = event.detail.response;
+          var docCount = response.documents.hits.total;
+          var subResponse = response.documents.hits.hits;
+          for (i in subResponse) {
+            subResponse[i]._source.total = JSON.stringify(docCount);
+            subResponse[i]._source.imageUrl = '<img src="http://images.digitalcollections.frick.org:80/media/id/' + subResponse[i]._id + '/thumb" height="100">';
+              subResponse[i]._source.getTiff = '<a href="http://images.digitalcollections.frick.org/media/raw/id/' + subResponse[i]._id + '"><img src="../images/tiff_icon.png" height="50"></a>';
+               /* console.log (`${JSON.stringify(subResponse[i])}`) */
+          }
+          var params = ['documents'].concat(response.documents.hits.hits);
+          this.push.apply(this, params);
+            /*  console.log (`${JSON.stringify(this.documents)}`)*/
+        },
+        _ifNotCached: function(barcode) {
+          //console.log(`barcode ${barcode}`)
+          if (this.cache.includes(barcode)) {
+            return false;
+          }
+          this.push('cache', barcode);
+            //console.log(`cache added`)
+          return true;
+
+        },
+        _setListToItemsArray: function() {
+          if (this.rangeListArray.length) {
+              this.rangeListArray = [];
+              this.documents = [];
+              this.cache =[];
+          }
+            if (this.arrayOfLines == '') {
+                this.documents = [];
+                this.itemsArray = [];
+                this.cache = [];
+                this.set('itemsArray', itemsArray);
+                console.log(`input text is empty`)
+            }
+            var itemsArray = this.arrayOfLines.slice();
+          this.set('itemsArray',itemsArray);
+          console.log(`items array is set to list ${this.itemsArray}`)
+        },
+        _setRangeToItemsArray: function() {
+            if (this.rangeListArray.length > 0) {
+          this.documents = [];
+          this.cache = [];
+          this.itemsArray = [];
+          var itemsArray = this.rangeListArray.slice();
+          this.set('itemsArray',itemsArray);
+          console.log(`items array is set to range ${this.itemsArray}`)
+            }
+        }
+
+      });
+    </script>
+  </dom-module>
+        <img src="../images/tiff_icon.png" height="512" width="512"/>

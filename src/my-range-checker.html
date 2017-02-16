@@ -11,43 +11,87 @@
     <style include="shared-styles">
       :host {
         display: block;
-
         padding: 16px;
       }
     </style>
     <style is="custom-style">
-   paper-button {
-     --paper-button: {
-       @apply(--layout-vertical);
-       @apply(--layout-right-right);
-
-    background-color: var(--paper-indigo-500);
-    color: white;
-    };
-  }
- </style>
-<div class="card">
-    <h1>Range Checker</h1><div style="margin-bottom:15px;">
-From <paper-input label="Starting Number" id="lowEnd"></paper-input> to <paper-input label="Ending Number" id="highEnd">
-</paper-input></div><paper-button on-tap="checkRange" raised><iron-icon icon="icons:search"></iron-icon>Check Range</paper-button></div>
+      paper-button {
+        --paper-button: {
+          @apply(--layout-vertical);
+          @apply(--layout-right-right);
+          background-color: var(--paper-indigo-500);
+          color: white;
+        }
+        ;
+      }
+    </style>
+    <div class="card halfCard">
+      <h1>Range Checker</h1>
+      <div style="margin-bottom:15px;">
+        From
+        <paper-input label="Starting Number" id="lowEnd" value="{{lowEndIn}}" auto-validate pattern="[0-9]*" error-message="numbers only!"></paper-input> to
+        <paper-input label="Ending Number" id="highEnd" on-value-changed="checkRange" value="{{highEndIn}}" auto-validate pattern="[0-9]*" error-message="numbers only!">
+        </paper-input>
+      </div>
+    </div>
+    <div class="card halfCard">
+      <h1>Results</h1>
+      <vaadin-grid items="[[documents]]" rows="20" selection-mode="multi">
+        <table>
+          <colgroup>
+            <col name="_source.Barcode" sortable/>
+            <col name="_source.FileName" sortable/>
+            <col name="_source.total" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th>Barcode</th>
+              <th>File Name</th>
+              <th>Group Count</th>
+            </tr>
+          </thead>
+        </table>
+      </vaadin-grid>
+    </div>
   </template>
   <!-- Creates the element's prototype and registers it -->
   <script>
-  window.addEventListener('checkRange', function (e) {
-           alert("This does fire");
-       });
     Polymer({
       is: 'my-range-checker',
-      checkRange: function() {
-          alert(lowEnd.value + ', ' + highEnd.value)
-          var list = [];
-      if (lowEnd.value >= 0 && highEnd.value >= lowEnd.value) {
-        for (var i = lowEnd.value; i <= highEnd.value; i++) {
-      list.push(i);
-    }
-    alert(list)
+      properties: {
+        'lowEndIn': {
+          type: String,
+          notify: true
+
+        },
+        'highEndIn': {
+          type: String,
+          notify: true
+        },
+        'rangeListArray': {
+          type: Array,
+          notify: true,
+          reflectToAttribute: true,
+          value: []
+        }
+
+      },
+      checkRange: function(e) {
+        var _THIS = this;
+        if (!e.detail) {
+          return
+        }
+        this.debounce('checkList', function() {
+          var rangeListArray = []
+          if (parseInt(this.lowEndIn) > 0 && parseInt(this.highEndIn) >= parseInt(this.lowEndIn)) {
+            for (var i = this.lowEndIn * 1; i <= this.highEndIn; i++) {
+              rangeListArray.push(JSON.stringify(i));
+            }
+          }
+          _THIS.set('rangeListArray', rangeListArray)
+        }, 300);
+        console.log(`new array ${JSON.stringify(this.rangeListArray)}`)
       }
-    }
     });
   </script>
 </dom-module>

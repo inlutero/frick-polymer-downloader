@@ -21,16 +21,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-menu/paper-menu.html">
-<link rel="import" href="../bower_components/paper-menu/paper-tabs.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="my-icons.html">
+<link rel="import" href="my-doc-updater.html">
+<link rel="import" href="my-downloader.html">
+<link rel="import" href="my-range-checker.html">
 
 <dom-module id="my-app">
   <template>
+    <my-doc-updater range-list-array="[[rangeListArray]]" array-of-lines="[[arrayOfLines]]" documents="{{documents}}"></my-doc-updater>
+    <my-downloader name="downloader" selected-ids="[[selectedIds]]"></my-downloader>
     <style>
-      :host {
+       :host {
         --app-primary-color: #4285f4;
         --app-secondary-color: black;
-
         display: block;
       }
 
@@ -38,6 +42,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         color: #fff;
         background-color: var(--app-primary-color);
       }
+
       app-header paper-icon-button {
         --paper-icon-button-ink-color: white;
       }
@@ -48,39 +53,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       .drawer-list a {
         display: block;
-
         padding: 0 16px;
-
         text-decoration: none;
-
         color: var(--app-secondary-color);
-
         line-height: 40px;
       }
 
       .drawer-list a.iron-selected {
         color: black;
-
         font-weight: bold;
       }
     </style>
 
     <app-location route="{{route}}"></app-location>
-    <app-route
-        route="{{route}}"
-        pattern="/:page"
-        data="{{routeData}}"
-        tail="{{subroute}}"></app-route>
+    <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
 
     <app-drawer-layout fullbleed>
       <!-- Drawer content -->
       <app-drawer>
         <app-toolbar class="tabs-bar">Menu</app-toolbar>
-        <paper-tabs selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+        <paper-menu selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
           <a name="range-checker" href="/range-checker">Range Checker</a>
           <a name="list-checker" href="/list-checker">List Checker</a>
           <a name="results-table" href="/results-table">Results Table</a>
-  </paper-tabs>
+          <my-downloader selected-ids="[[selectedIds]]"></my-downloader>
+        </paper-menu>
       </app-drawer>
 
       <!-- Main content -->
@@ -93,16 +90,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </app-toolbar>
         </app-header>
 
-        <iron-pages
-            selected="[[page]]"
-            attr-for-selected="name"
-            fallback-selection="view404"
-            role="main">
-          <my-range-checker name="range-checker"></my-range-checker>
-          <my-list-checker name="list-checker"></my-list-checker>
-          <my-results-table name="results-table"></my-results-table>
+        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
+          <my-range-checker name="range-checker" range-list-array="{{rangeListArray}}" documents="[[documents]]" doc-count="[[docCount]]"></my-range-checker>
+          <my-list-checker name="list-checker" array-of-lines="{{arrayOfLines}}" documents="[[documents]]" doc-count="[[docCount]]"></my-list-checker>
+          <my-results-table name="results-table" documents="[[documents]]" selected-ids="{{selectedIds}}"></my-results-table>
           <my-view404 name="view404"></my-view404>
-  </iron-pages>
+        </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
   </template>

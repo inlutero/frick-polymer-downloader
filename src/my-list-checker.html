@@ -12,6 +12,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="../bower_components/iron-autogrow-textarea/iron-autogrow-textarea.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../src/my-icons.html">
 
 <dom-module id="my-list-checker">
@@ -23,47 +24,63 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-    <style is="custom-style">
-    paper-button {
-        --paper-button: {
-          @apply(--layout-vertical);
-          @apply(--layout-right-right);
-        }
-        ;
-        background-color: var(--paper-indigo-500);
-        color: white;
-      }
-
-      ;
-    }
-    .wideLay {
-      @apply(--layout-vertical);
-    }
-    </style>
-
-    <div class="card">
+    <div class="card halfCard">
       <h1>List Checker</h1>
-      <div class="wideLay">
-        <iron-autogrow-textarea id="text1" rows="15" style="width:100%;margin-bottom:15px;" placeholder="Cut and paste or drag and drop barcode list text here."></iron-autogrow-textarea>
-        <paper-button on-tap="checkList" raised>
-          <iron-icon icon="icons:search"></iron-icon>Check List</paper-button>
+      <div>
+        <iron-autogrow-textarea id="textList" on-value-changed="checkList" value="{{listValues}}" id="text1" rows="15" style="width:100%;margin-bottom:15px;" placeholder="Cut and paste or drag and drop barcode list text here."></iron-autogrow-textarea>
       </div>
+    </div>
+    <div class="card halfCard">
+      <h1>Results</h1>
+      <vaadin-grid items="[[documents]]" rows="20" selection-mode="multi">
+        <table>
+          <colgroup>
+            <col name="_source.Barcode" sortable/>
+            <col name="_source.FileName" sortable/>
+            <col name="_source.total" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th>Barcode</th>
+              <th>File Name</th>
+              <th>Group Count</th>
+            </tr>
+          </thead>
+        </table>
+      </vaadin-grid>
     </div>
   </template>
 
   <script>
     Polymer({
       is: 'my-list-checker',
-      checkList: function() {
-        if (textarea.value != '') {
-          var separators = [' ', '\n', ','];
-          var arrayOfLines = textarea.value.split(new RegExp(separators.join('|'), '')).filter(bcode => bcode.trim().length > 0)
-          alert(arrayOfLines)
-          getElements(0, arrayOfLines, 0, 0, 0, function() {
-            console.log('Done!')
-          })
+      properties: {
+        'arrayOfLines': {
+          type: Array,
+          notify: true,
+          reflectToAttribute: true,
+            value: []
         }
-        this.fire('checkRange')
+      },
+      checkList: function(e) {
+        if (!e.detail) {
+          return
+        }
+        console.log(arguments)
+
+        this.debounce('checkList', function() {
+          if (this.listValues != '') {
+            var separators = [' ', '\n', ','];
+            var arrayOfLines = this.listValues.split(new RegExp(separators.join('|'), '')).filter(bcode => bcode.trim().length > 0)
+            this.set('arrayOfLines', arrayOfLines)
+            console.log(`new array ${JSON.stringify(this.arrayOfLines)}`)
+          } else if (this.listValues == ''){
+            var arrayOfLines = []
+            this.set('arrayOfLines', arrayOfLines)
+            console.log(`emptying this array of lines`)
+            console.log(`new arrayOfLines is ${this.arrayOfLines}`)
+          }
+        }, 300);
       }
     });
   </script>
