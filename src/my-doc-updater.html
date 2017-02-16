@@ -52,16 +52,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         },
         handleResponse: function(event) {
-          var response = event.detail.response
-          var docCount = response.documents.hits.total
-          var subResponse = response.documents.hits.hits
+          var response = event.detail.response;
+          var docCount = response.documents.hits.total;
+          var subResponse = response.documents.hits.hits;
           for (i in subResponse) {
-            subResponse[i]._source.total = JSON.stringify(docCount)
-            subResponse[i]._source.imageUrl = '<img src="http://images.digitalcollections.frick.org:80/media/id/' + subResponse[i]._id + '/thumb" height="100">'
-              /*  console.log (`${JSON.stringify(subResponse[i])}`) */
+            subResponse[i]._source.total = JSON.stringify(docCount);
+            subResponse[i]._source.imageUrl = '<img src="http://images.digitalcollections.frick.org:80/media/id/' + subResponse[i]._id + '/thumb" height="100">';
+              subResponse[i]._source.getTiff = '<a href="http://images.digitalcollections.frick.org/media/raw/id/' + subResponse[i]._id + '"><img src="../images/tiff_icon.png" height="50"></a>';
+               /* console.log (`${JSON.stringify(subResponse[i])}`) */
           }
-          var params = ['documents'].concat(response.documents.hits.hits)
-          this.push.apply(this, params)
+          var params = ['documents'].concat(response.documents.hits.hits);
+          this.push.apply(this, params);
             /*  console.log (`${JSON.stringify(this.documents)}`)*/
         },
         _ifNotCached: function(barcode) {
@@ -69,33 +70,33 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           if (this.cache.includes(barcode)) {
             return false;
           }
-          this.push('cache', barcode)
+          this.push('cache', barcode);
             //console.log(`cache added`)
           return true;
 
         },
         _setListToItemsArray: function() {
-          if (this.arrayOfLines == '') {
-            this.documents = []
-            this.itemsArray = []
-            this.cache = []
-            this.set('itemsArray', itemsArray)
-            console.log(`input text is empty`)
+          if (this.rangeListArray.length) {
+              this.rangeListArray = [];
+              this.documents = [];
+              this.cache =[];
           }
-          this.rangeListArray = []
-          var itemsArray = this.arrayOfLines.slice();
-          this.set('itemsArray',itemsArray)
+            var itemsArray = this.arrayOfLines.slice();
+          this.set('itemsArray',itemsArray);
           console.log(`items array is set to list ${this.itemsArray}`)
         },
         _setRangeToItemsArray: function() {
-          this.documents = []
-          this.cache = []
-          this.itemsArray = []
+            if (this.rangeListArray.length > 0) {
+          this.documents = [];
+          this.cache = [];
+          this.itemsArray = [];
           var itemsArray = this.rangeListArray.slice();
-          this.set('itemsArray',itemsArray)
+          this.set('itemsArray',itemsArray);
           console.log(`items array is set to range ${this.itemsArray}`)
+            }
         }
 
       });
     </script>
   </dom-module>
+        <img src="../images/tiff_icon.png" height="512" width="512"/>
