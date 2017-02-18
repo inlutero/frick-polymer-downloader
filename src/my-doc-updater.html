@@ -16,7 +16,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <dom-module id="my-doc-updater">
     <template>
       <template is="dom-repeat" items="{{itemsArray}}" filter="_ifNotCached">
-        <iron-ajax auto url="http://192.168.10.85/api/search/details/Barcode/{{item}}" handle-as="json" on-response="handleResponse" data-item$="[[item]]" debounce-duration="500"></iron-ajax>
+        <iron-ajax auto url="http://digitalcollections.frick.org/api/search/details/Barcode/{{item}}" handle-as="json" on-response="handleResponse" data-item$="[[item]]" debounce-duration="500"></iron-ajax>
       </template>
     </template>
     <script>

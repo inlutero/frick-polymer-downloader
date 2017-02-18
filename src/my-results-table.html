@@ -30,7 +30,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <vaadin-grid id="mainGrid" items="[[documents]]" rows="20" selection-mode="multi" onchange="">
         <table id="mainTable">
           <colgroup>
-            <col name="_source.Barcode"  sortable="" />
+            <col name="_source.Barcode"  sortable />
             <col name="_source.FileName" sortable="" />
             <col name="_source.total" sortable="" />
             <col name="_source.imageUrl" />
@@ -72,14 +72,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         },
         attached: function() {
+          console.log(`${this.documents}`)
           var grid = this.$.mainGrid;
           var self = this;
           var selectedIds = [];
           var filter = this.$.fileFilter;
           var _THIS = this;
           grid.then(function() {
-              var documents = grid.items;
-              console.log(`documents are ${JSON.stringify(documents[0]._source)}`);
+            /*  var documents = grid.items;*/
+              /*console.log(`documents are ${JSON.stringify(documents[0]._source)}`);*/
 
               grid.columns[3].renderer = function(cell) {
               cell.element.innerHTML = cell.data;
@@ -96,16 +97,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               _THIS.set(`selectedIds`, selectedIds)
             });
               // Re-order the data array on sort-order-changed event
-              grid.addEventListener('sort-order-changed', function(e) {
+            /*  grid.addEventListener('sort-order-changed', function(e) {
                   e.preventDefault();
-                  console.log(e.detail.value[0].column)
+                  // console.log(e.detail.value[0].column)
                   var idx = 1;
                   console.log(`${idx}`)
                   var lesser = grid.sortOrder[0].direction == 'asc' ? -1 : 1;
-                  grid.items.sort(function(a, b) {
-                      return (a[idx] < b[idx]) ? lesser : -lesser;
+                  this.documents.sort(function(a, b) {
+                    console.log(a._source);
+                      return (a._source.Barcode - b._source.Barcode) ? lesser : -lesser;
                   });
-              });
+              });*/
           })
         }
       })
