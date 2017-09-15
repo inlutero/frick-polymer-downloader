@@ -80,7 +80,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         var params = ['documents'].concat(response.documents.hits.hits);
         this.push.apply(this, params);
-        /*  console.log (`${JSON.stringify(this.documents)}`)*/
+        console.log (`documents are ${JSON.stringify(this.documents)}`)
       },
       _ifNotCached: function(barcode) {
         //console.log(`barcode ${barcode}`)

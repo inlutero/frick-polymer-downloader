@@ -44,12 +44,14 @@
             <col name="_source.Barcode" sortable/>
             <col name="_source.FileName" sortable/>
             <col name="_source.total" />
+              <col name="_source.Path" />
           </colgroup>
           <thead>
             <tr>
               <th>Barcode</th>
               <th>File Name</th>
               <th>Group Count</th>
+              <th>Path</th>
             </tr>
           </thead>
         </table>
@@ -72,8 +74,7 @@
         'rangeListArray': {
           type: Array,
           notify: true,
-          reflectToAttribute: true,
-          value: []
+ reflectToAttribute: true,          value: []
         },
         'selection': {
           type: String,
