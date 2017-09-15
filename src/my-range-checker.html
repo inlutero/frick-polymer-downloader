@@ -22,9 +22,15 @@
           @apply(--layout-right-right);
           background-color: var(--paper-indigo-500);
           color: white;
-        }
-        ;
+        };
       }
+      vaadin-grid {
+          -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+      }
+
     </style>
     <custom-style/>
     <div class="card halfCard">
@@ -38,7 +44,7 @@
     </div>
     <div class="card halfCard">
       <h1>Results</h1>
-      <vaadin-grid items="[[documents]]" rows="20" selection-mode="multi">
+      <vaadin-grid  items="[[documents]]" rows="20" selection-mode="multi">
         <table>
           <colgroup>
             <col name="_source.Barcode" sortable/>
@@ -74,7 +80,8 @@
         'rangeListArray': {
           type: Array,
           notify: true,
- reflectToAttribute: true,          value: []
+          reflectToAttribute: true,
+          value: []
         },
         'selection': {
           type: String,
@@ -89,7 +96,7 @@
           return
         }
         this.debounce('checkList', function() {
-this.selection="Barcode";
+          this.selection = "Barcode";
           var rangeListArray = []
           if (parseInt(this.lowEndIn) > 0 && parseInt(this.highEndIn) >= parseInt(this.lowEndIn)) {
             for (var i = this.lowEndIn * 1; i <= this.highEndIn; i++) {
