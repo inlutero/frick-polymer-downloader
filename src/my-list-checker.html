@@ -13,25 +13,65 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-autogrow-textarea/iron-autogrow-textarea.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/webcomponentsjs/webcomponents-lite.js">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html" <link rel="import" href="../bower_components/neon-animation/web-animations.js">
 <link rel="import" href="../src/my-icons.html">
 
 <dom-module id="my-list-checker">
   <template>
-    <style include="shared-styles">
-      :host {
-        display: block;
-        padding: 10px;
-      }
-    </style>
 
+    <custom-style>
+      <style is="custom-style" include="shared-styles">
+        paper-tabs {
+          width: 400px;
+        }
+
+        .vertical-section-container {
+          max-width: 300px;
+        }
+
+        paper-dropdown-menu {
+          width: 200px;
+          margin-right: 20px;
+        }
+      </style>
+    </custom-style>
     <div class="card halfCard">
+      <paper-dropdown-menu label="Search Field" vertical-align="bottom" horizontal-align="left">
+        <paper-listbox class="dropdown-content" slot="dropdown-content" attr-for-selected="value" selected="{{selection}}">
+          <paper-item value="Barcode">Barcode</paper-item>
+          <paper-item value="bibRecordNumber">Bib Record Number</paper-item>
+          <paper-item value="fileName">File Name</paper-item>
+        </paper-listbox>
+      </paper-dropdown-menu>
       <h1>List Checker</h1>
+      <div>
+
+      </div>
       <div>
         <iron-autogrow-textarea id="textList" on-value-changed="checkList" value="{{listValues}}" id="text1" rows="15" style="width:100%;margin-bottom:15px;" placeholder="Cut and paste or drag and drop barcode list text here."></iron-autogrow-textarea>
       </div>
     </div>
     <div class="card halfCard">
       <h1>Results</h1>
+      <template is="dom-if" if="{{itemsMissedFound}}">
+        <h3>Not Found</h3>
+        <vaadin-grid items="[[itemsMissed]]" rows="20">
+          <table>
+            <colgroup>
+              <col name="_source.Barcode" sortable/>
+            </colgroup>
+            <thead>
+              <tr>
+                <th>Search Term</th>
+              </tr>
+            </thead>
+          </table>
+        </vaadin-grid>
+      </template>
       <vaadin-grid items="[[documents]]" rows="20" selection-mode="multi">
         <table>
           <colgroup>
@@ -59,24 +99,54 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Array,
           notify: true,
           reflectToAttribute: true,
-            value: []
+          value: []
+        },
+        'selection': {
+          type: String,
+          notify: true
+        },
+        'itemsMissed': {
+          type: Array,
+          notify: true,
+          reflectToAttribute: true,
+          value: [],
+          observer: '_itemsMissed'
+        },
+        'itemsMissedFound': {
+          type: Boolean,
+          notify: true,
+          value: false
         }
+      },
+      showSelection: function(i) {
+        console.log(this.selection)
+      },
+      _itemsMissed: function() {
+        console.log('items missed function triggered')
+        if (this.itemsMissed != '') {
+          this.set('itemsMissedFound', true)
+        } else if (this.itemsMissed == '') {
+          this.set('itemMissedFound', false)
+        }
+        console.log(this.itemsMissedFound)
       },
       checkList: function(e) {
         if (!e.detail) {
           return
         }
         console.log(arguments)
-
+        console.log(this.selection)
         this.debounce('checkList', function() {
           if (this.listValues != '') {
             var separators = [' ', '\n', ','];
             var arrayOfLines = this.listValues.split(new RegExp(separators.join('|'), '')).filter(bcode => bcode.trim().length > 0)
             this.set('arrayOfLines', arrayOfLines)
             console.log(`new array ${JSON.stringify(this.arrayOfLines)}`)
-          } else if (this.listValues == ''){
+          } else if (this.listValues == '') {
             var arrayOfLines = []
             this.set('arrayOfLines', arrayOfLines)
+            this.itemsMissed = [];
+            this.itemsMissedFound = false;
             console.log(`emptying this array of lines`)
             console.log(`new arrayOfLines is ${this.arrayOfLines}`)
           }

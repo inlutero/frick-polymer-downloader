@@ -26,10 +26,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="my-doc-updater.html">
 <link rel="import" href="my-downloader.html">
 <link rel="import" href="my-range-checker.html">
+<link rel="import" href="my-list-checker.html">
 
 <dom-module id="my-app">
   <template>
-    <my-doc-updater range-list-array="[[rangeListArray]]" array-of-lines="[[arrayOfLines]]" documents="{{documents}}"></my-doc-updater>
+    <my-doc-updater selection="[[selection]]" range-list-array="[[rangeListArray]]" array-of-lines="[[arrayOfLines]]" documents="{{documents}}" items-missed="{{itemsMissed}}"></my-doc-updater>
     <my-downloader name="downloader" selected-ids="[[selectedIds]]"></my-downloader>
     <style>
        :host {
@@ -70,7 +71,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <app-drawer-layout fullbleed>
       <!-- Drawer content -->
-      <app-drawer>
+      <app-drawer slot="drawer">
         <app-toolbar class="tabs-bar">Menu</app-toolbar>
         <paper-menu selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
           <a name="range-checker" href="/range-checker">Range Checker</a>
@@ -85,15 +86,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <app-header condenses reveals effects="waterfall">
           <app-toolbar>
-            <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
             <div main-title>Digital Collections Barcode Checker</div>
           </app-toolbar>
         </app-header>
 
         <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
-          <my-range-checker name="range-checker" range-list-array="{{rangeListArray}}" documents="[[documents]]" doc-count="[[docCount]]"></my-range-checker>
-          <my-list-checker name="list-checker" array-of-lines="{{arrayOfLines}}" documents="[[documents]]" doc-count="[[docCount]]"></my-list-checker>
-          <my-results-table name="results-table" documents="[[documents]]" selected-ids="{{selectedIds}}"></my-results-table>
+          <my-range-checker name="range-checker" range-list-array="{{rangeListArray}}" documents="[[documents]]" doc-count="[[docCount]]" selection="{{selection}}"></my-range-checker>
+          <my-list-checker name="list-checker" array-of-lines="{{arrayOfLines}}" documents="[[documents]]" doc-count="[[docCount]]" selection="{{selection}}" items-missed="{{itemsMissed}}"></my-list-checker>
+          <my-results-table name="results-table" documents="[[documents]]" selected-ids="{{selectedIds}}" ></my-results-table>
           <my-view404 name="view404"></my-view404>
         </iron-pages>
       </app-header-layout>

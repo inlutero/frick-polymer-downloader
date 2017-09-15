@@ -14,7 +14,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="shared-styles.html">
 
-<dom-module id="my-results-table" >
+<dom-module id="my-results-table">
   <template>
     <style include="shared-styles">
        :host {
@@ -22,7 +22,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         padding: 10px;
         --vaadin-grid-row-height: 100px;
       }
-
     </style>
 
     <div class="card wideLay">
@@ -30,7 +29,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <vaadin-grid id="mainGrid" items="[[documents]]" rows="20" selection-mode="multi" onchange="">
         <table id="mainTable">
           <colgroup>
-            <col name="_source.Barcode"  sortable="" />
+            <col id="_source.Barcode" name="_source.Barcode" sortable="" />
             <col name="_source.FileName" sortable="" />
             <col name="_source.total" sortable="" />
             <col name="_source.imageUrl" />
@@ -47,7 +46,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <tr>
               <th></th>
               <th>
-                <paper-input id="fileFilter" label="Filter Results"></paper-input>
               </th>
             </tr>
           </thead>
@@ -57,6 +55,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </div>
   </template>
   <script>
+    var filterElement = document.createElement("paper-input");
+    filterElement.setAttribute("type", "search");
+    filterElement.setAttribute("placeholder", "Filter...");
+    filterElement.style.width = "100%";
+
+
     HTMLImports.whenReady(function() {
 
       Polymer({
@@ -69,6 +73,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             type: Array,
             notify: true,
             value: []
+          },
+          'filteredDocs': {
+            type: Array,
+            notify: true,
+            value: []
           }
         },
         attached: function() {
@@ -78,34 +87,66 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var filter = this.$.fileFilter;
           var _THIS = this;
           grid.then(function() {
-              var documents = grid.items;
-              console.log(`documents are ${JSON.stringify(documents[0]._source)}`);
+            var gridItems = grid.items;
+            ////
 
-              grid.columns[3].renderer = function(cell) {
+            grid.header.getCell(1, 0).content = filterElement;
+
+            var timer = 0;
+
+            function filter() {
+              console.log("refreshing grid")
+              clearTimeout(timer);
+              timer = setTimeout(grid.refreshItems.bind(grid), 500);
+              console.log(grid.items.length);
+              if (filterData.length != 0) {
+                grid.items = filterData;
+              }
+            };
+
+            filterElement.addEventListener("keyup", filter);
+            filterElement.addEventListener("click", filter);
+
+
+            filterData = function(params, callback) {
+              console.log("updating grid")
+              var filterValue = filterElement.value.toLowerCase();
+              var data = gridItems.filter(function(val) {
+                return (val._source.FileName.toString().toLowerCase()).indexOf(filterValue) > -1
+              });
+              console.log(data)
+              var slice = data.slice(params.index, params.index + params.count);
+              callback(slice, data.length);
+            };
+            ////
+            grid.columns[3].renderer = function(cell) {
               cell.element.innerHTML = cell.data;
             };
-              grid.columns[4].renderer = function(cell) {
-                  cell.element.innerHTML = cell.data;
-              };
-
+            grid.columns[4].renderer = function(cell) {
+              cell.element.innerHTML = cell.data;
+            };
             grid.addEventListener('selected-items-changed', function() {
               selectedIds = [];
               grid.selection.selected(function(index) {
-              selectedIds.push(grid.items[index]._id)
+                selectedIds.push(grid.items[index]._id)
               });
               _THIS.set(`selectedIds`, selectedIds)
             });
-              // Re-order the data array on sort-order-changed event
-              grid.addEventListener('sort-order-changed', function(e) {
-                  e.preventDefault();
-                  console.log(e.detail.value[0].column)
-                  var idx = 1;
-                  console.log(`${idx}`)
-                  var lesser = grid.sortOrder[0].direction == 'asc' ? -1 : 1;
-                  grid.items.sort(function(a, b) {
-                      return (a[idx] < b[idx]) ? lesser : -lesser;
-                  });
+            // Re-order the data array on sort-order-changed event
+            grid.addEventListener('sort-order-changed', function(e) {
+              grid.items = gridItems;
+              e.preventDefault();
+              console.log(e.detail)
+              console.log('grid items for sort are' + grid.items)
+              var idx = e.detail.value[0].column;
+              var columnList = ["Barcode", "FileName", "total"]
+              var colName = columnList[idx];
+              console.log(`${colName}`)
+              var lesser = grid.sortOrder[0].direction == 'asc' ? -1 : 1;
+              grid.items.sort(function(a, b) {
+                return (a._source[colName] < b._source[colName]) ? lesser : -lesser;
               });
+            });
           })
         }
       })
