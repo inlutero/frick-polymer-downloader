@@ -12,6 +12,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/csv-download/dist/csv-download.html">
+<link rel="import" href="../bower_components/jszip/dist/jszip.min.js">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="my-results-table">
@@ -36,6 +38,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <div class="card wideLay">
       <h1>Results</h1>
+<button on-tap="download_csv">Download CSV</button>
       <vaadin-grid id="mainGrid" items="[[documents]]" rows="20" selection-mode="multi" onchange="">
         <table id="mainTable">
           <colgroup>
@@ -81,6 +84,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           'documents': {
             type: Array
           },
+          'docArray': {
+            type: Array,
+            notify: true,
+            value: []
+                    },
           'selectedIds': {
             type: Array,
             notify: true,
@@ -92,10 +100,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             value: []
           }
         },
+        download_csv: function () {
+          var csv = 'FileName,Barcode,bibRecordNumber,bibRecordNumberShort,Creator_culture,Creator_AttributionNotes,WorkDate_earliestDate,WorkDate_latestDate\n';
+          console.log('CAUGHT THE DOC ' + JSON.stringify(this.docArray))
+          this.docArray.forEach(function(row) {
+            console.log(row)
+            csv += JSON.stringify(row).replace(/^\[|]$/g, '');
+            csv += "\n";
+          });
+
+          console.log(csv);
+          var hiddenElement = document.createElement('a');
+          hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+          hiddenElement.target = '_blank';
+          hiddenElement.download = 'metadata.csv';
+          hiddenElement.click();
+        },
         attached: function() {
           var grid = this.$.mainGrid;
           var self = this;
           var selectedIds = [];
+          var intArray = this.documents;
           var filter = this.$.fileFilter;
           var _THIS = this;
           grid.then(function() {
@@ -118,8 +143,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             filterElement.addEventListener("keyup", filter);
             filterElement.addEventListener("click", filter);
-
-
+            /*console.log('the doc array is ' + JSON.stringify(docArray));*/
             filterData = function(params, callback) {
               console.log("updating grid")
               var filterValue = filterElement.value.toLowerCase();
@@ -139,10 +163,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             };
             grid.addEventListener('selected-items-changed', function() {
               selectedIds = [];
-              grid.selection.selected(function(index) {
-                selectedIds.push(grid.items[index]._id)
+              var docArray = [];
+              grid.selection.selected(function(x) {
+                selectedIds.push(grid.items[x]._id)
+                docArray.push({
+                  FileName: grid.items[x]._source.FileName,
+                  Barcode: grid.items[x]._source.Barcode,
+                  bibRecordNumber: grid.items[x]._source.bibRecordNumber,
+                  bibRecordNumberShort: grid.items[x]._source.bibRecordNumberShort,
+                  Creator_culture: grid.items[x]._source.Creator_culture,
+                  Creator_AttributionNotes: grid.items[x]._source.Creator_AttributionNotes,
+                  WorkDate_earliestDate: grid.items[x]._source.WorkDate_earliestDate,
+                  WorkDate_latestDate: grid.items[x]._source.WorkDate_latestDate
+                })
+
               });
-              _THIS.set(`selectedIds`, selectedIds)
+              console.log('docArray ' + JSON.stringify(docArray));
+              docArray = docArray.map( Object.values);
+              _THIS.set('docArray', docArray);
+              _THIS.set(`selectedIds`, selectedIds);
             });
             // Re-order the data array on sort-order-changed event
             grid.addEventListener('sort-order-changed', function(e) {
