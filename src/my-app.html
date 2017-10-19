@@ -26,7 +26,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="my-doc-updater.html">
 <link rel="import" href="my-downloader.html">
 <link rel="import" href="my-range-checker.html">
-<link rel="import" href="my-list-checker.html">
+<link rel="import" href="list-checker.html">
 
 <dom-module id="my-app">
   <template>
@@ -92,7 +92,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
           <my-range-checker name="range-checker" range-list-array="{{rangeListArray}}" documents="[[documents]]" doc-count="[[docCount]]" selection="{{selection}}"></my-range-checker>
-          <my-list-checker name="list-checker" array-of-lines="{{arrayOfLines}}" documents="[[documents]]" doc-count="[[docCount]]" selection="{{selection}}" items-missed="{{itemsMissed}}"></my-list-checker>
+          <list-checker name="list-checker" array-of-lines="{{arrayOfLines}}" documents="[[documents]]" doc-count="[[docCount]]" selection="{{selection}}" items-missed="{{itemsMissed}}"></list-checker>
           <my-results-table name="results-table" documents="[[documents]]" selected-ids="{{selectedIds}}"></my-results-table>
           <my-view404 name="view404"></my-view404>
         </iron-pages>
