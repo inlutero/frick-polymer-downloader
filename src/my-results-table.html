@@ -81,8 +81,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       Polymer({
         is: 'my-results-table',
         properties: {
-          'documents': {
-            type: Array
+       'documents': {
+            type: Array,
+            observer: '_onDocsChanged'
           },
           'docArray': {
             type: Array,
@@ -98,9 +99,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             type: Array,
             notify: true,
             value: []
+          },
+          'filterData': {
+            type: Array,
+            notify: true,
+            value: []
+          },
+          'gridItems': {
+            type: Array,
+            notify: true,
+            value: []
           }
         },
-        download_csv: function () {
+        attributeChanged: function() {
+          var grid = this.$.mainGrid;
+          var gridItems = this.gridItems;
+          this.set('filterData', grid.items)
+          this.set('gridItems', grid.items)
+          grid.refreshItems.bind(grid)
+          console.log("gridITems " + gridItems)
+
+        },
+        download_csv: function() {
           var csv = 'FileName,Barcode,bibRecordNumber,bibRecordNumberShort,Creator_culture,Creator_AttributionNotes,WorkDate_earliestDate,WorkDate_latestDate\n';
           console.log('CAUGHT THE DOC ' + JSON.stringify(this.docArray))
           this.docArray.forEach(function(row) {
@@ -116,26 +136,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           hiddenElement.download = 'metadata.csv';
           hiddenElement.click();
         },
-        attached: function() {
+        _onDocsChanged: function() {
+          var documents = this.documents;
           var grid = this.$.mainGrid;
           var self = this;
           var selectedIds = [];
-          var intArray = this.documents;
           var filter = this.$.fileFilter;
           var _THIS = this;
+          var filterData = this.filterData;
           grid.then(function() {
             var gridItems = grid.items;
             ////
-
             grid.header.getCell(1, 0).content = filterElement;
-
             var timer = 0;
 
             function filter() {
-              console.log("refreshing grid")
               clearTimeout(timer);
               timer = setTimeout(grid.refreshItems.bind(grid), 500);
-              console.log(grid.items.length);
               if (filterData.length != 0) {
                 grid.items = filterData;
               }
@@ -145,12 +162,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             filterElement.addEventListener("click", filter);
             /*console.log('the doc array is ' + JSON.stringify(docArray));*/
             filterData = function(params, callback) {
-              console.log("updating grid")
               var filterValue = filterElement.value.toLowerCase();
               var data = gridItems.filter(function(val) {
                 return (val._source.FileName.toString().toLowerCase()).indexOf(filterValue) > -1
               });
-              console.log(data)
               var slice = data.slice(params.index, params.index + params.count);
               callback(slice, data.length);
             };
@@ -185,10 +200,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             });
             // Re-order the data array on sort-order-changed event
             grid.addEventListener('sort-order-changed', function(e) {
+              filter();
               grid.items = gridItems;
               e.preventDefault();
-              console.log(e.detail)
-              console.log('grid items for sort are' + grid.items)
+            /*  console.log(e.detail)
+              console.log('grid items for sort are' + grid.items) */
               var idx = e.detail.value[0].column;
               var columnList = ["Barcode", "FileName", "total"]
               var colName = columnList[idx];
