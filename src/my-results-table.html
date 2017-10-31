@@ -12,7 +12,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../bower_components/csv-download/dist/csv-download.html">
 <link rel="import" href="../bower_components/jszip/dist/jszip.min.js">
 <link rel="import" href="shared-styles.html">
 
@@ -38,7 +37,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <div class="card wideLay">
       <h1>Results</h1>
-<button on-tap="download_csv">Download CSV</button>
       <vaadin-grid id="mainGrid" items="[[documents]]" rows="20" selection-mode="multi" onchange="">
         <table id="mainTable">
           <colgroup>
@@ -119,22 +117,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           grid.refreshItems.bind(grid)
           console.log("gridITems " + gridItems)
 
-        },
-        download_csv: function() {
-          var csv = 'FileName,Barcode,bibRecordNumber,bibRecordNumberShort,Creator_culture,Creator_AttributionNotes,WorkDate_earliestDate,WorkDate_latestDate\n';
-          console.log('CAUGHT THE DOC ' + JSON.stringify(this.docArray))
-          this.docArray.forEach(function(row) {
-            console.log(row)
-            csv += JSON.stringify(row).replace(/^\[|]$/g, '');
-            csv += "\n";
-          });
-
-          console.log(csv);
-          var hiddenElement = document.createElement('a');
-          hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
-          hiddenElement.target = '_blank';
-          hiddenElement.download = 'metadata.csv';
-          hiddenElement.click();
         },
         _onDocsChanged: function() {
           var documents = this.documents;

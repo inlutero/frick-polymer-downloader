@@ -31,7 +31,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <dom-module id="my-app">
   <template>
     <my-doc-updater selection="[[selection]]" range-list-array="[[rangeListArray]]" array-of-lines="[[arrayOfLines]]" documents="{{documents}}" items-missed="{{itemsMissed}}"></my-doc-updater>
-    <my-downloader name="downloader" selected-ids="[[selectedIds]]"></my-downloader>
     <style>
        :host {
         --app-primary-color: #4285f4;
@@ -77,7 +76,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <a name="range-checker" href="/range-checker">Barcode Range Checker</a>
           <a name="list-checker" href="/list-checker">List Checker</a>
           <a name="results-table" href="/results-table">Results Table</a>
-          <my-downloader selected-ids="[[selectedIds]]"></my-downloader>
+          <my-downloader doc-array="[[docArray]]" selected-ids="[[selectedIds]]"></my-downloader>
         </paper-menu>
       </app-drawer>
 
@@ -93,7 +92,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
           <my-range-checker name="range-checker" range-list-array="{{rangeListArray}}" documents="[[documents]]" doc-count="[[docCount]]" selection="{{selection}}"></my-range-checker>
           <my-list-checker name="list-checker" array-of-lines="{{arrayOfLines}}" documents="[[documents]]" doc-count="[[docCount]]" selection="{{selection}}" items-missed="{{itemsMissed}}"></my-list-checker>
-          <my-results-table name="results-table" documents="[[documents]]" selected-ids="{{selectedIds}}"></my-results-table>
+          <my-results-table name="results-table" documents="[[documents]]" selected-ids="{{selectedIds}}" doc-array="{{docArray}}"></my-results-table>
           <my-view404 name="view404"></my-view404>
         </iron-pages>
       </app-header-layout>

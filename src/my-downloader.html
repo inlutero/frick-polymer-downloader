@@ -10,6 +10,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <linl rel="import" href="../bower_components/webcomponentsjs/webcomponents-lite.min.js">
   <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
   <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+  <link rel="import" href="../bower_components/csv-download/dist/csv-download.html">
   <link rel="import" href="../bower_components/paper-button/paper-button.html">
   <link rel="import" href="shared-styles.html">
 
@@ -28,13 +29,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             @apply(--layout-right-right);
             background-color: var(--paper-indigo-500);
             color: white;
-          }
-          ;
+            margin-bottom: 1em;
+          };
+        }
+        paper-button:hover {
+          background-color: var(--paper-indigo-400);
         }
       </style>
-      <paper-button selected-ids="[[selectedIds]]" on-click="requestAjax">Download Selected</paper-button>
+      <div>
+      <paper-button class="custom" selected-ids="[[selectedIds]]" on-click="requestAjax">Download Selected</paper-button>
       <iron-ajax  id="ironajax" url="http://192.168.10.85/media/zip" handle-as="json" method="POST" body="[[getAjaxBody(dataArray)]]" content-type="application/json; charset=UTF-8" on-response="handleResponse" debounce-duration="500">
       </iron-ajax>
+      <paper-button class="custom" on-tap="download_csv">Download CSV</paper-button>
+    </div>
     </template>
     <script>
       Polymer({
@@ -54,6 +61,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           console.log(`this is the ajax body ${JSON.stringify(this.dataArray)}`)
           return JSON.stringify(this.dataArray);
         },
+        download_csv: function() {
+          var csv = 'FileName,Barcode,bibRecordNumber,bibRecordNumberShort,Creator_culture,Creator_AttributionNotes,WorkDate_earliestDate,WorkDate_latestDate\n';
+          console.log('CAUGHT THE DOC ' + JSON.stringify(this.docArray))
+          this.docArray.forEach(function(row) {
+            console.log(row)
+            csv += JSON.stringify(row).replace(/^\[|]$/g, '');
+            csv += "\n";
+          });
+
+          console.log(csv);
+          var hiddenElement = document.createElement('a');
+          hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+          hiddenElement.target = '_blank';
+          hiddenElement.download = 'metadata.csv';
+          hiddenElement.click();
+        },
         handleResponse: function(event) {
           console.log(`${JSON.stringify(event.detail.response.file_url)}`)
           var result = event.detail.response
@@ -64,7 +87,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         requestAjax: function() {
           var dataArray = []
-          console.log(`passed ids ${JSON.stringify(this.selectedIds)}`)
+        /*  console.log(`passed ids ${JSON.stringify(this.selectedIds)}`)*/
           dataArray = {
             "ids": [],
             "mapper": {
