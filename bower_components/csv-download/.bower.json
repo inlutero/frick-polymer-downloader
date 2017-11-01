@@ -1,0 +1,28 @@
+{
+  "name": "csv-download",
+  "version": "0.2.2",
+  "description": "Download an array as a CSV file",
+  "license": "MIT",
+  "main": "dist/csv-download.html",
+  "keywords": [
+    "csv",
+    "download",
+    "web-components"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ],
+  "homepage": "https://github.com/chris-l/csv-download",
+  "_release": "0.2.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.2.2",
+    "commit": "6b2d237faee8cd9b2e27ba458df8388294ad3516"
+  },
+  "_source": "https://github.com/chris-l/csv-download.git",
+  "_target": "^0.2.2",
+  "_originalSource": "csv-download",
+  "_direct": true
+}

@@ -1,0 +1,72 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<polymer-element name="polymer-datatables-export" attributes="columns data filename exportTime tableApi">
+  <template></template>
+  <script src="../lodash/lodash.js"></script>
+  <script>
+  Polymer({
+    publish: {
+      filename: 'data-export',
+      data: [],
+      exportTime: null,
+      exportData: [],
+      exportAll: true,
+    },
+    attached: function() {
+      function loadScript(url) {
+        var script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = url;
+        document.body.appendChild(script);
+      }
+      // Load Moment
+      if( typeof window.moment == 'undefined' ) {
+        loadScript("../moment/min/moment.min.js");
+      }
+    },
+    export: function(event, detail, sender) {
+      var poly = this;
+      poly.exportData = [];
+
+      if( ! poly.exportTime ) {
+        poly.exportTime = moment().format('-MM-DD-YY');
+      }
+
+      // Add titles
+      var titles = [];
+      var keys = [];
+      _.each(poly.columns, function(col) {
+        if( col.data ) {
+          keys.push( col.data );
+          titles.push( col.title || col.data );
+        }
+      });
+      // Add data for csv
+      poly.exportData.push(titles);
+
+      var data;
+      if( poly.exportAll ) {
+        data = _.clone(poly.data);
+      } else {
+        data = poly.tableApi.rows({
+          order:  'applied',
+          search: 'applied',
+          page:   'all',
+        }).data();
+      }
+
+      _.each( data, function(row) {
+        var d = [];
+        _.each(keys, function(key) {
+          var cellData = row[key] || '';
+          if (typeof cellData === 'string') {
+            cellData = cellData.replace(/,/g, '').replace(/^\s+|\s+$/g, '');
+          }
+          d.push( cellData );
+        });
+        poly.exportData.push(d);
+      });
+    },
+  });
+  </script>
+</polymer-element>

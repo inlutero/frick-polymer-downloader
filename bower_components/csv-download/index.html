@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&lt;csv-download&gt;</title>
+
+    <!-- Importing Web Component's Polyfill -->
+    <script>if (!('registerElement' in document
+      && 'createShadowRoot' in HTMLElement.prototype
+      && 'import' in document.createElement('link')
+      && 'content' in document.createElement('template'))) {
+            document.write('<script src="bower_components/webcomponentsjs/webcomponents.min.js"><\/script>');
+      }</script>
+
+    <!-- Importing Custom Elements -->
+    <link rel="import" href="src/csv-download.html">
+    <link rel="import" href="bower_components/polymer/polymer.html">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+
+    <div class="container">
+      <h1>csv-download demo</h1>
+      <p>Press the button to download this array as a CSV file</p>
+      <pre>
+[
+  [ 1, 2, 3 ],
+  [ "\"marisa\"", "hakurei,reimu", "sanae" ],
+  [ { toJSON: function () { return 'hi'; } }, '1', 'a' ]
+]
+      </pre>
+      <template is="dom-bind" id="template">
+        <a is="csv-download" id="mycsv" data="{{myArray}}" class="btn btn-wide btn-primary">Download as csv</a>
+        <script>
+          var el = document.getElementById('template');
+
+          el.myArray = [
+            [ 1, 2, 3 ],
+            [ "\"marisa\"", "hakurei,reimu", "sanae" ],
+            [ { toJSON: function () { return 'hi'; } }, '1', 'a' ]
+          ];
+        </script>
+      </template>
+    </div>
+  </body>
+</html>
