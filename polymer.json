@@ -2,11 +2,14 @@
   "entrypoint": "index.html",
   "shell": "src/my-app.html",
   "fragments": [
-    "src/my-view1.html",
     "src/my-results-table.html",
-    "src/my-view3.html",
-    "src/range-checker.html",
-    "src/my-view404.html"
+    "src/my-view404.html",
+    "src/my-downloader.html",
+    "src/my-list-checker.html",
+    "src/shared-styles.html",
+    "src/my-doc-updater.html",
+    "src/my-icons.html",
+    "src/my-range-checker.html"
   ],
   "sourceGlobs": [
    "src/**/*",
@@ -16,5 +19,20 @@
   "includeDependencies": [
     "manifest.json",
     "bower_components/webcomponentsjs/webcomponents-lite.min.js"
-  ]
+  ],
+"builds": [
+  {
+    "name": "bundled",
+    "bundle": true,
+    "js": {"minify": true},
+    "css": {"minify": true},
+    "html": {"minify": true}
+  },
+  {
+    "name": "unbundled",
+    "js": {"minify": true},
+    "css": {"minify": true},
+    "html": {"minify": true}
+  }
+]
 }
