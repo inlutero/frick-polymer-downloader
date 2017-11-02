@@ -62,7 +62,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           return JSON.stringify(this.dataArray);
         },
         download_csv: function() {
-          var csv = 'FileName,Barcode,bibRecordNumber,bibRecordNumberShort,Creator_culture,Creator_AttributionNotes,WorkDate_earliestDate,WorkDate_latestDate\n';
+          var csv = 'Creator_culture,Credit,Creator,Qualifier,Creator_formerAtt,WorkTitle,SeriesTitle,WorkTitle_othertitles,WorkDate_display,WorkTechnique,dc:PhysicalMedium,dc:SizeOrDuration,WorkLocation_collection,WorkLocation_city,WorkLocation_state,WorkLocation_country,WorkSubject_agent,WorkSubject_classSubj,ImageLocation_classno,Image_rightsStatus,Image_creditLine,bibRecordNumber,ContainerID\n';
           console.log('CAUGHT THE DOC ' + JSON.stringify(this.docArray))
           this.docArray.forEach(function(row) {
             console.log(row)
