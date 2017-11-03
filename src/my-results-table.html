@@ -72,7 +72,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     filterElement.setAttribute("type", "search");
     filterElement.setAttribute("placeholder", "Filter...");
     filterElement.style.width = "100%";
-
+    filterElement.value = "";
 
     HTMLImports.whenReady(function() {
 
@@ -139,7 +139,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 grid.items = filterData;
               }
             };
-
+            filter();
             filterElement.addEventListener("keyup", filter);
             filterElement.addEventListener("click", filter);
             /*console.log('the doc array is ' + JSON.stringify(docArray));*/
@@ -182,15 +182,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             });
             // Re-order the data array on sort-order-changed event
             grid.addEventListener('sort-order-changed', function(e) {
-              filter();
               grid.items = gridItems;
+              console.log(gridItems)
               e.preventDefault();
-            /*  console.log(e.detail)
+        /*    console.log(e.detail)
               console.log('grid items for sort are' + grid.items) */
               var idx = e.detail.value[0].column;
               var columnList = ["Barcode", "FileName", "total"]
               var colName = columnList[idx];
-              console.log(`${colName}`)
+        /*      console.log(`${colName}`)*/
               var lesser = grid.sortOrder[0].direction == 'asc' ? -1 : 1;
               grid.items.sort(function(a, b) {
                 return (a._source[colName] < b._source[colName]) ? lesser : -lesser;
