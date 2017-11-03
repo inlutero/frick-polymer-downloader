@@ -44,13 +44,13 @@
     </div>
     <div class="card halfCard">
       <h1>Results</h1>
-      <vaadin-grid  items="[[documents]]" rows="20" selection-mode="multi">
+      <vaadin-grid  items="[[documents]]" rows="20" selection-mode="">
         <table>
           <colgroup>
             <col name="_source.Barcode" sortable/>
             <col name="_source.FileName" sortable/>
             <col name="_source.total" />
-              <col name="_source.Path" />
+            <col name="_source.Path" />
           </colgroup>
           <thead>
             <tr>
