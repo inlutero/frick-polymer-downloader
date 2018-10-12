@@ -62,7 +62,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           return JSON.stringify(this.dataArray);
         },
         download_csv: function() {
-          var csv = 'Creator_culture,Credit,Creator,Qualifier,Creator_formerAtt,WorkTitle,SeriesTitle,WorkTitle_othertitles,WorkDate_display,WorkTechnique,dc:PhysicalMedium,dc:SizeOrDuration,WorkLocation_collection,WorkLocation_city,WorkLocation_state,WorkLocation_country,WorkSubject_agent,WorkSubject_classSubj,ImageLocation_classno,Image_rightsStatus,Image_creditLine,bibRecordNumber,ContainerID\n';
+          var csv = 'Creator_culture,Credit,Creator,Qualifier,Creator_formerAtt,WorkTitle,SeriesTitle,WorkTitle_othertitles,WorkDate_display,WorkTechnique,dc:PhysicalMedium,dc:SizeOrDuration,WorkLocation_collection,WorkLocation_city,WorkLocation_state,WorkLocation_country,WorkSubject_agent,WorkSubject_classSubj,ImageLocation_classno,Image_rightsStatus,Image_creditLine,bibRecordNumber,ContainerID,Path\n';
           console.log('CAUGHT THE DOC ' + JSON.stringify(this.docArray))
           this.docArray.forEach(function(row) {
             console.log(row)
@@ -80,7 +80,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         handleResponse: function(event) {
           console.log(`${JSON.stringify(event.detail.response.file_url)}`)
           var result = event.detail.response
-          var downURL = 'http://192.168.10.85'
+          var downURL = 'http://192.168.10.110'
           zipLoc = downURL + result.file_url
           console.log(`zip location is ${zipLoc}`)
           window.location = zipLoc;

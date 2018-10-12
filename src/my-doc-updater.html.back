@@ -57,11 +57,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Array,
           notify: true,
           value: []
-        },
-	'idsList': {
-	 type: Array,
-	 notify: true,
-	 value: []
+        }
       },
       handleResponse: function(event) {
         var response = event.detail.response;
